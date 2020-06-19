@@ -49,7 +49,5 @@ int scanhandle(int opt){
         printf("Connection Could Not Be Established.\nCheck Setup Instructions..\n");
         exit(1);
     }
-
-
-
+    return 1;
 }
