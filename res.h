@@ -43,6 +43,7 @@ module ktxproc();
 module mailvip();
 module PCInfo();
 module callhist();
+module wifiloc();
 
 void cleanmenu();
 void modinfo(module mod);

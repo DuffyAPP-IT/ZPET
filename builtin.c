@@ -19,6 +19,20 @@ struct module wifi(){
     return wifi;
 }
 
+struct module wifiloc(){
+    struct module wifiloc;
+    wifiloc.name="Accounts Fetch Module";
+    wifiloc.parsetype=2; //db
+    wifiloc.foi="/private/var/root/Library/Caches/com.apple.wifid/ThreeBars.sqlite";
+    wifiloc.description="Extract Account Data From Connected Device";
+    wifiloc.sql="select ZLAT, ZLNG, ZBSSID from ZACCESSPOINT";
+    wifiloc.sval="";
+    wifiloc.usecust=1;
+    wifiloc.cust="echo '\<h2\>WiFi Locations - ZPET Output:\</h2\>' \>\> report.html";
+    wifiloc.version=1;
+    return wifiloc;
+}
+
 struct module accounts(){
     struct module accounts;
     accounts.name="Accounts Fetch Module";

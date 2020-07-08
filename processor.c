@@ -2,6 +2,7 @@
 // Created by 010010 on 28/05/2020.
 //
 
+#include <zconf.h>
 #include "processor.h"
 #include "res.h"
 #include "scanhandler.h"
@@ -47,6 +48,7 @@ int sqliteproc(module mod){
         system(mod.cust);
     }
     char comm[1200];
+    sleep(10);
     sprintf(comm,"echo '<ul>' \>\> report.html ; sqlite3 Data/import.sqlite '%s' | awk '{print \"\<li\>\"$0\"\<\/li\>\"}' \>\> report.html ; echo '\<\/ul\>' \>\> report.html",mod.sql);
     system(comm);
     printf("\n//////////OUTPUT END//////////\n");

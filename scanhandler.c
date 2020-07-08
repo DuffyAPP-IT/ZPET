@@ -15,11 +15,12 @@ int scanhandle(int opt){
                 printf("Quick - B91\n");
                 macos_run_comm("rm report.html");
                 macos_run_comm("echo '\<html\> \<head\> \<style\> body \{font-family: arial\;\} \<\/style\> \<\/head\> \<body\>\<h1\>ZPET REPORT - DuffyAPP_IT - Quick Scan - B91\</h1\>' \>\> report.html");
-                plistproc(wifi());
-                sqliteproc(accounts());
-                plistproc(bsn());
-                plistproc(vpnd());
-                custproc(mailextract());
+//                plistproc(wifi());
+//                sqliteproc(accounts());
+//                plistproc(bsn());
+//                plistproc(vpnd());
+//                custproc(mailextract());
+                sqliteproc(wifiloc());
                 printf("Report available at -> %s/report.html", macos_run_comm("pwd"));
                 break;
             case 3:

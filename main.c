@@ -32,7 +32,7 @@ int main() {
     if (opt <= ARRAY_SIZE(mainMenu)) {
         switch (opt) {
             case 1:
-                printf("See ZPET B74 RELNOTES PDF\n");
+                printf("See ZPET B9X RELNOTES PDF\n");
                 break;
             case 2:
                 printf("Quick Scan\n");
@@ -43,7 +43,7 @@ int main() {
                 scanhandle(3);
                 break;
             case 4:
-                printf("Custom Scan\n");
+                printf("Spider\n");
                 scanhandle(4);
                 break;
             default:
