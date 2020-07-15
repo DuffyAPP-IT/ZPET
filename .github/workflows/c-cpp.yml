@@ -13,5 +13,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: cmake-build-debug/make
-      run: cmake-build-debug/make
+    - name: cmake-build-debug/make -f Makefile
+      run: cmake-build-debug/make -f Makefile
