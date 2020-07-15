@@ -1,5 +1,5 @@
 <img src="OUT%20ZPET%20DESIGN%20FINAL-05.png">
-
+![ZPET BUILD](https://github.com/DuffyAPP-IT/ZPET/workflows/ZPET%20BUILD/badge.svg?branch=master)
 # Build B91 RC1 Release Features
 - Apple ID & Connected Device Accounts
 - WiFi Network Detailed Extraction
