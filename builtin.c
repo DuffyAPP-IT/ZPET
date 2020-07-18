@@ -172,7 +172,7 @@ struct module callhist(){
     struct module callhist;
     callhist.parsetype=2;
     callhist.name="Call History";
-    callhist.description="Mail Data Extraction";
+    callhist.description="Call-Related Data Extraction";
     callhist.foi="/private/var/mobile/Library/CallHistoryDB/CallHistory.storedata";
     callhist.sval="";
     callhist.sql="SELECT ZADDRESS AS 'ADDRESS', ZANSWERED AS 'WAS ANSWERED', ZCALLTYPE AS 'CALL TYPE', ZORIGINATED AS 'ORIGINATED', ZDURATION AS 'DURATION', ZISO_COUNTRY_CODE as 'ISO COUNTY CODE', ZLOCATION AS 'LOCATION', ZSERVICE_PROVIDER AS 'SERVICE PROVIDER' FROM ZCALLRECORD";
