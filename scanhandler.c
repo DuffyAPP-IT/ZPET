@@ -8,23 +8,24 @@
 #include <stdio.h>
 
 int scanhandle(int opt){
-    cleanmenu();
+    cleanmenu(0,"");
     if(ios_fetch_access("127.0.0.1","2222")==0){
         switch(opt){
             case 2:
-                printf("Quick - B91\n");
+                printf("Quick - B100\n");
                 macos_run_comm("rm report.html");
                 macos_run_comm("echo '\<html\> \<head\> \<style\> body \{font-family: arial\;\} \<\/style\> \<\/head\> \<body\>\<h1\>ZPET REPORT - DuffyAPP_IT - Quick Scan - B91\</h1\>' \>\> report.html");
-//                plistproc(wifi());
-//                sqliteproc(accounts());
-//                plistproc(bsn());
-//                plistproc(vpnd());
-//                custproc(mailextract());
+                //Here we define which processors to use for each struct defining each module.
+                plistproc(wifi());
+                sqliteproc(accounts());
+                plistproc(bsn());
+                plistproc(vpnd());
+                custproc(mailextract());
                 sqliteproc(wifiloc());
                 printf("Report available at -> %s/report.html", macos_run_comm("pwd"));
                 break;
             case 3:
-                printf("Extended - B91\n");
+                printf("Extended - B100\n");
                 macos_run_comm("rm report.html");
                 macos_run_comm("echo '\<html\> \<head\> \<style\> body \{font-family: arial\;\} \<\/style\> \<\/head\> \<body\>\<h1\>ZPET REPORT - DuffyAPP_IT - Extended - B91\</h1\>' \>\> report.html");
                 plistproc(wifi());
@@ -47,7 +48,7 @@ int scanhandle(int opt){
                 exit(1);
         }
     } else{
-        printf("Connection Could Not Be Established.\nCheck Setup Instructions..\n");
+        printf("iDevice Connection Issue...\nCheck Setup Instructions..\n");
         exit(1);
     }
     return 1;

@@ -45,7 +45,7 @@ module PCInfo();
 module callhist();
 module wifiloc();
 
-void cleanmenu();
+void cleanmenu(int note, char *notedata);
 void modinfo(module mod);
 int ios_fetch_access(char *ipin,char *port);
 
