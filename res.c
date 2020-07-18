@@ -89,6 +89,7 @@ int ios_makedir(char *absolutedirectory){
         char *com1 = ("mkdir");
         char *com2 = (">/dev/null 2>/dev/null\; echo \$?");
         char dirmake[800];
+        
         sprintf(dirmake, "%s %s %s", com1, absolutedirectory, com2);
         return (atoi(ios_run_ge(dirmake)));
     }

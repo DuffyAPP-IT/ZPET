@@ -1,0 +1,19 @@
+ZPET/Zero-Pin Extraction Toolkit is designed to parse information from a connected, locked iOS Device
+in BFU (Before First Unlock) mode.
+
+ZPET operates with a live device, and does not require prior dumping of the Root Filesystem.
+
+ZPET does not modify any files on-device, and utilises SCP to returnm "FOI's"/Files Of Interest
+for local parsing.
+
+ZPET is designed to be used for demonstration purposes only to allow consumers to understand
+what personal data is accessible on their own devices in an 'encrypted state'.
+
+I assume you have already read the instruction manual for ZPET. If not, please give it a read
+as it has some very important information, I promise!
+
+Finally, enjoy, and please do @ me on Twitter with any questions or to let me know what you find! 
+
+To see this prompt again, check out the welcome file in the current directory.
+
+- @J_Duffy01
