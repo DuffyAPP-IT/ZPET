@@ -26,7 +26,7 @@
 
 ![ZPET BUILD](https://github.com/DuffyAPP-IT/ZPET/workflows/ZPET%20BUILD/badge.svg?branch=master)
 
-In a situation where an iOS Device is BFU, it’s generally speaking not possible to retrieve data from the iOS Device. The release of the checkm8 exploit made the challenge of extracting data much easier for the likes of Cellebrite and other forensics organisations. 
+In a situation where an iOS Device is BFU, it’s (generally speaking) not possible to retrieve data from the iOS Device. The release of the checkm8 exploit made the challenge of extracting data much easier for the likes of Cellebrite and other forensics organisations. 
 
 ZPET is designed to enable the public to understand and visualise the data that their device is holding in an unencrypted form. By executing ZPET while the device is locked and BFU, a wealth of information can be extracted and visualised by the end-user.
 
