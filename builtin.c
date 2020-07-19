@@ -15,7 +15,7 @@ struct module wifi(){
     wifi.version=1;
     wifi.dict="List of known networks";
     wifi.usecust=1;
-    wifi.cust="echo '\<h2\>WiFi Module - ZPET Output:\</h2\>' \>\> report.html";
+    wifi.cust="echo '\<h2\>WiFi Module:\</h2\>' \>\> report.html";
     return wifi;
 }
 
@@ -28,7 +28,7 @@ struct module wifiloc(){
     wifiloc.sql="select ZLAT, ZLNG, ZBSSID from ZACCESSPOINT";
     wifiloc.sval="";
     wifiloc.usecust=1;
-    wifiloc.cust="echo '\<h2\>WiFi Locations - ZPET Output:\</h2\>' \>\> report.html";
+    wifiloc.cust="echo '\<h2\>WiFi Locations:\</h2\>' \>\> report.html";
     wifiloc.version=1;
     return wifiloc;
 }
@@ -42,7 +42,7 @@ struct module accounts(){
     accounts.sql="SELECT DISTINCT zusername FROM ZACCOUNT";
     accounts.sval="";
     accounts.usecust=1;
-    accounts.cust="echo '\<h2\>Account Fetch Module - ZPET Output:\</h2\>' \>\> report.html";
+    accounts.cust="echo '\<h2\>Account Fetch Module:\</h2\>' \>\> report.html";
     accounts.version=1;
     return accounts;
 }
@@ -55,7 +55,7 @@ struct module bsn(){
     bsn.description="Battery Serial Finder";
     bsn.sval="Serial";
     bsn.usecust=1;
-    bsn.cust="echo '\<h2\>Battery Serial Module - ZPET Output:\</h2\>' \>\> report.html";
+    bsn.cust="echo '\<h2\>Battery Serial Module:\</h2\>' \>\> report.html";
     bsn.dict="";
     return bsn;
 }
@@ -68,7 +68,7 @@ struct module vpnd(){
     vpnd.description="VPN Endpoint Fetch Module";
     vpnd.sval="-a @ -B 1";
     vpnd.usecust=1;
-    vpnd.cust="echo '\<h2\>VPN Endpoint Fetch Module - ZPET Output:\</h2\>' \>\> report.html";
+    vpnd.cust="echo '\<h2\>VPN Endpoint Fetch Module:\</h2\>' \>\> report.html";
     vpnd.dict="";
     return vpnd;
 }
@@ -83,7 +83,7 @@ struct module appids(){
     appids.sql="SELECT DISTINCT Application_identifier FROM kvs_debug";
     appids.version=1;
     appids.usecust=1;
-    appids.cust="echo '\<h2\>Bundle ID Fetch Module - ZPET Output:\</h2\>' \>\> report.html";
+    appids.cust="echo '\<h2\>Bundle ID Fetch Module:\</h2\>' \>\> report.html";
     return appids;
 }
 
@@ -115,7 +115,7 @@ struct module mailextract(){
 struct module wapp(){
     struct module wapp;
     wapp.parsetype=4;
-    wapp.name="WhatsAPP Contact ID Extract";
+    wapp.name="WhatsAPP Contact ID Extraction";
     wapp.description="Extract WhatsAPP Contact IDs From History";
     wapp.foi="/private/var/mobile/Containers/Data/Application/F3A03AA5-0041-4B55-AB29-B8FE1AAA1111/";
     wapp.usefoi2=1;
@@ -143,7 +143,7 @@ struct module mailvip(){
     mailvip.name="Mail VIP Extraction Module";
     mailvip.parsetype=4; //plist
     mailvip.foi="/private/var/mobile/Library/Mail/VIPs.plist";
-    mailvip.description="VIP List Extractor";
+    mailvip.description="VIP List Extraction";
     mailvip.sval="";
     mailvip.version=1;
     mailvip.dict="List of known networks";
@@ -163,7 +163,7 @@ struct module PCInfo(){
     pcinfo.sql="SELECT KEY AS 'KEY', VALUE AS 'VALUE' FROM SCALARS where key like \"com.apple.passcode.NumPasscode%\" ";
     pcinfo.sval="";
     pcinfo.usecust=1;
-    pcinfo.cust="echo '\<h2\>Passcode Info Fetch - ZPET Output:\</h2\>' \>\> report.html";
+    pcinfo.cust="echo '\<h2\>Basic Passcode Info Fetch:\</h2\>' \>\> report.html";
     pcinfo.version=1;
     return pcinfo;
 }
@@ -177,6 +177,6 @@ struct module callhist(){
     callhist.sval="";
     callhist.sql="SELECT ZADDRESS AS 'ADDRESS', ZANSWERED AS 'WAS ANSWERED', ZCALLTYPE AS 'CALL TYPE', ZORIGINATED AS 'ORIGINATED', ZDURATION AS 'DURATION', ZISO_COUNTRY_CODE as 'ISO COUNTY CODE', ZLOCATION AS 'LOCATION', ZSERVICE_PROVIDER AS 'SERVICE PROVIDER' FROM ZCALLRECORD";
     callhist.usecust=1;
-    callhist.cust="echo '\<h2\>Call Hist - ZPET Output:\</h2\>' \>\> report.html";
+    callhist.cust="echo '\<h2\>Call History:\</h2\>' \>\> report.html";
     return callhist;
 }
