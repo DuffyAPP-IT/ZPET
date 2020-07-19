@@ -1,5 +1,13 @@
 <img src="OUT%20ZPET%20DESIGN%20FINAL-05.png">
 
+
+# B100 Release Features:
+ - Welcome Text On First Launch
+ - Call-Related Data Extraction
+ - Enhanced Error-Handling
+ - Increased Overall Stability
+ - A few hidden features for all to explore ❤️
+
 # Build B91 RC1 Release Features
 - Apple ID & Connected Device Accounts
 - WiFi Network Detailed Extraction
