@@ -5,13 +5,12 @@
 #include <zconf.h>
 #include "processor.h"
 #include "res.h"
-#include "scanhandler.h"
 
 int jsonproc(module mod){
     {
         printf("Loading Plugin -> %s\n", mod.name);
         modinfo(mod);
-        printf("\n//////////OUTPUT START//////////\n");
+//        printf("\n//////////OUTPUT START//////////\n");
         //recieve relevant file
         if(mod.parsetype!=1){
             printf("INCORRECT TYPE\n");
@@ -22,14 +21,14 @@ int jsonproc(module mod){
             sprintf(comm,"echo WAIT");
             system(comm);
         } else{
-            printf("Error\n");
+            printf("Module ERROR\n");
 //            exit(1);
         }
         if(mod.useendcust==1){
             system(mod.endcust);
         }
-        printf("\n//////////OUTPUT END//////////\n");
-//        system("rm -rf Data/import.json");
+//        printf("\n//////////OUTPUT END//////////\n");
+//        system("rm Data/import.json");
     }
 }
 
@@ -37,7 +36,7 @@ int sqliteproc(module mod){
     modinfo(mod);
     printf("Loading Plugin -> %s\n", mod.name);
     modinfo(mod);
-    printf("\n//////////OUTPUT START//////////\n");
+//    printf("\n//////////OUTPUT START//////////\n");
     //recieve relevant file
     if(mod.parsetype!=2){
         printf("INCORRECT TYPE\n");
@@ -51,7 +50,7 @@ int sqliteproc(module mod){
     sleep(10);
     sprintf(comm,"echo '<ul>' \>\> report.html ; sqlite3 Data/import.sqlite '%s' | awk '{print \"\<li\>\"$0\"\<\/li\>\"}' \>\> report.html ; echo '\<\/ul\>' \>\> report.html",mod.sql);
     system(comm);
-    printf("\n//////////OUTPUT END//////////\n");
+//    printf("\n//////////OUTPUT END//////////\n");
     system("rm Data/import.sqlite");
     //add check for type before exec
 }
@@ -59,7 +58,7 @@ int sqliteproc(module mod){
 int plistproc(module mod){
     printf("Loading Plugin -> %s\n", mod.name);
     modinfo(mod);
-    printf("\n//////////OUTPUT START//////////\n");
+//    printf("\n//////////OUTPUT START//////////\n");
     //recieve relevant file
     if(mod.parsetype!=3){
         printf("INCORRECT TYPE\n");
@@ -72,7 +71,7 @@ int plistproc(module mod){
     char comm[1200];
     sprintf(comm,"echo '<ul>' \>\> report.html ; /usr/libexec/PlistBuddy -c 'print \"%s:\"' Data/import.plist | grep -a %s | cut -f2- -d'=' | awk '{print \"\<li\>\"$0\"\<\/li\>\"}' \>\> report.html ; echo '\<\/ul\>' \>\> report.html",mod.dict,mod.sval);
     system(comm);
-    printf("\n//////////OUTPUT END//////////\n");
+//    printf("\n//////////OUTPUT END//////////\n");
     system("rm Data/import.plist");
 }
 
@@ -84,7 +83,7 @@ int custproc(module mod){
     {
         printf("Loading Plugin -> %s\n", mod.name);
         modinfo(mod);
-        printf("\n//////////OUTPUT START//////////\n");
+//        printf("\n//////////OUTPUT START//////////\n");
         //recieve relevant file
         if(mod.parsetype!=4){
             printf("INCORRECT TYPE\n");
@@ -100,7 +99,7 @@ int custproc(module mod){
         if(mod.useendcust==1){
             system(mod.endcust);
         }
-        printf("\n//////////OUTPUT END//////////\n");
+//        printf("\n//////////OUTPUT END//////////\n");
 //        system("rm -rf Data/import.json");
     }
 }

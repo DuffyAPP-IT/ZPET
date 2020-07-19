@@ -5,12 +5,15 @@
 #include "res.h"
 
 void modinfo(module mod){
-    printf("Module Name : %s\n", mod.name);
-    printf("Module Description : %s\n", mod.description);
-    printf("Module Version : %d\n", mod.version);
-    printf("Module FOI Target : %s\n", mod.foi);
-    printf("Parse Type (Check Documentation) : %d\n", mod.parsetype);
-    printf("Specific Value : %s", mod.sval);
+    printf("Executing Module (Non-Verbose) -> %s\n\n",mod.name);
+//    printf("Module Name : %s\n", mod.name);
+//    printf("Module Description : %s\n", mod.description);
+//    printf("Module Version : %d\n", mod.version);
+//    printf("Module FOI Target : %s\n", mod.foi);
+//    printf("Parse Type (Check Documentation) : %d\n", mod.parsetype);
+//    if(strlen(mod.sval) == 0){
+//        printf("Specific Value : %s", mod.sval);
+//    }
 }
 
 int ios_fetch_access(char *ipin,char *port){
