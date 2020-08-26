@@ -49,6 +49,10 @@ void cleanmenu(int note, char *notedata);
 void modinfo(module mod);
 int ios_fetch_access(char *ipin,char *port);
 
+//secureLog
+int securelog();
+int rlogios();
+
 char *ios_run_comm(char *command);
 char *ios_run_ge(char *command);
 

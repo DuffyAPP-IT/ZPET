@@ -15,18 +15,20 @@ void cleanmenu(int note, char *notedata){
 
 //Generate Menu Items
 const char *mainMenu[] = {"Setup Intructions",
-                         "Quick Scan - B100",
-                         "Extended Scan - B100",
+                         "Quick Scan - B200",
+                         "Extended Scan - B200",
+                         "MapperV2 - LIVE - B200",
                          "Custom Scan - Disabled"
 };
 
 int main() {
-    if (mkdir("Data", 0777) == -1){
+    if (1==5){
         cleanmenu(0,"");
         printf("ERR - DATA Already Exists.\nEnsure You Backup & Remove DATA Folder Before Executing...\n");
         exit(1);
     } else{
         cleanmenu(1,"Initialising");
+        system("mkdir DATA");
         //DATA folder create success
         //firstlaunchcheck
         if( access( ".flaunch", F_OK ) != -1 ) {
@@ -59,7 +61,7 @@ int main() {
         if (opt <= ARRAY_SIZE(mainMenu)) {
             switch (opt) {
                 case 1:
-                    printf("See ZPET B100 Release Notes\n");
+                    printf("See ZPET Release Notes\n");
                     break;
                 case 2:
                     printf("Quick Scan\n");
@@ -70,7 +72,7 @@ int main() {
                     scanhandle(3);
                     break;
                 case 4:
-                    printf("Spider\n");
+                    printf("MapperV2 LIVE\n");
                     scanhandle(4);
                     break;
                 default:

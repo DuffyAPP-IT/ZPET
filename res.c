@@ -4,6 +4,29 @@
 
 #include "res.h"
 
+int securelog(){
+    printf("Sending Filesystem Monitor To iDevice\n");
+    if(ios_send_f("Resources/fsmon-ios","/")!=50){
+        ios_run_ge("\/fsmon-ios \\> \/.fslog-ios \\&");
+        return 0;
+    } else{
+        printf("Failed Transmitting Filesystem Monitor...\n");
+        return 1;
+    }
+}
+
+
+int rlogios(){
+    printf("Returning Filesystem Logs\n");
+    if(ios_rec_f("/.fslog-ios","Data/fslog-ios")==0){
+        ios_run_ge("rm /fsmon-ios");
+//        ios_run_ge("rm /.fslog-ios");
+        return 0;
+    } else{
+        return 1;
+    }
+}
+
 void modinfo(module mod){
     printf("Executing Module (Non-Verbose) -> %s\n\n",mod.name);
 //    printf("Module Name : %s\n", mod.name);
@@ -34,8 +57,8 @@ int ios_fetch_access(char *ipin,char *port){
 
 //iOS Exec Handling
 char *ios_run_comm(char *command){
-    char *com1 = "sshpass -p";
-    char *com2 = "ssh -o StrictHostKeyChecking=no root@127.0.0.1 -p 2222";
+    char *com1 = "Resources/sshpass -p";
+    char *com2 = "ssh -o StrictHostKeyChecking=no root@127.0.0.1 -p 7788";
     char commout[2400];
     sprintf(commout, "%s alpine %s %s", com1, com2, command);
     char *com = commout;
@@ -46,8 +69,8 @@ char *ios_run_comm(char *command){
     return out;
 }
 char *ios_run_ge(char *command){
-    char *com1 = "sshpass -p";
-    char *com2 = "ssh -o StrictHostKeyChecking=no root@127.0.0.1 -p 2222";
+    char *com1 = "Resources/sshpass -p";
+    char *com2 = "ssh -o StrictHostKeyChecking=no root@127.0.0.1 -p 7788";
     char *silence = ">/dev/null 2>/dev/null \; echo $?";
     char commout[2400];
     sprintf(commout, "%s alpine %s %s %s", com1, com2, command, silence);
@@ -88,7 +111,7 @@ int macos_run_ge(char *command){
 
 //iOS FS Management
 int ios_makedir(char *absolutedirectory){
-    if (ios_fetch_access("127.0.0.1","2222") == 0){
+    if (ios_fetch_access("127.0.0.1","7788") == 0){
         char *com1 = ("mkdir");
         char *com2 = (">/dev/null 2>/dev/null\; echo \$?");
         char dirmake[800];
@@ -104,7 +127,7 @@ int ios_send_f(char *filetosend, char *remotedir){
     {
         fclose(fileout);
         char commout[800];
-        sprintf(commout, "sshpass -p alpine scp -P 2222 %s root@127.0.0.1:%s \; echo $?", filetosend, remotedir);
+        sprintf(commout, "Resources/sshpass -p alpine scp -P 7788 %s root@127.0.0.1:%s 2>/dev/null \; echo $?", filetosend, remotedir);
         char *com = commout;
         char out[2048];
         FILE *shell = popen(com, "r");
@@ -116,12 +139,11 @@ int ios_send_f(char *filetosend, char *remotedir){
             return 1;
         }
     }
-
 }
 //ios_rec_f("/mnt1/private/etc/fstab","fstab");
 int ios_rec_f(char *remotefiledir, char *localfname){
     char commout[800];
-    sprintf(commout, "sshpass -p alpine scp -r -P 2222 root@127.0.0.1:%s %s \; echo $?", remotefiledir, localfname);
+    sprintf(commout, "Resources/sshpass -p alpine scp -r -P 7788 root@127.0.0.1:%s %s 2>/dev/null \; echo $?", remotefiledir, localfname);
     char *com = commout;
     char out[2048];
     FILE *shell = popen(com, "r");
