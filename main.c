@@ -22,12 +22,8 @@ const char *mainMenu[] = {"Setup Intructions",
 };
 
 int main() {
-    if (1==5){
-        cleanmenu(0,"");
-        printf("ERR - DATA Already Exists.\nEnsure You Backup & Remove DATA Folder Before Executing...\n");
-        exit(1);
-    } else{
         cleanmenu(1,"Initialising");
+        system("rm -rf DATA 2>/dev/null");
         system("mkdir DATA");
         //DATA folder create success
         //firstlaunchcheck
@@ -81,5 +77,4 @@ int main() {
             }
             return 0;
         }
-    }
 }
