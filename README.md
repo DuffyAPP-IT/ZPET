@@ -1,5 +1,14 @@
 <img src="OUT%20ZPET%20DESIGN%20FINAL-05.png">
 
+# ** a little temporary issue (sideloading iProxy) requires you to run 'brew install libimobiledevice' prior to executing ZPET <3 **
+
+# B200 Release Features:
+B200 Release Features:
+ - Automatic Filesystem Monitoring During Execution (needs better implementation - working on it!)
+ - No requirement for iPhone Tunnel
+ - Automatic SSH Configuration
+ - Better Stability!
+ - Basic Hidden Media Extraction w/MapperV2-LIVE implementation
 
 # B100 Release Features:
  - Welcome Text On First Launch
