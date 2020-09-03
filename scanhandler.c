@@ -11,15 +11,32 @@ int scanhandle(int opt){
     cleanmenu(0,"");
 
     if(macos_run_ge("which iproxy")==0){
-        printf("Starting Device Proxy & Enabling Disk Write\n");
-        ios_run_ge("mount -o rw,union,update /");
+        printf("Starting Device Proxy\n");
         //could set custom port here.
+        //add autokill
         if(macos_run_ge("iproxy 7788 44 &")==0){
             printf("Started Device Proxy\n");
         }
     } else{
-        printf("iProxy Not Found...\nInstall iProxy and try again!\n");
-        exit(1);
+        printf("iProxy Not Found...\nInstalling iProxy...\nDetecting Brew Installation...\n");
+        if(macos_run_ge("brew test")==1){
+            printf("Brew Detected... Installing libimobiledevice (iProxy)");
+            system("brew install libimobiledevice");
+
+            if(macos_run_ge("which iproxy")==0){
+                printf("Starting Device Proxy\n");
+                //could set custom port here.
+                //add autokill
+                if(macos_run_ge("iproxy 7788 44 &")==0){
+                    printf("Started Device Proxy\n");
+                }
+            } else{
+                printf("System Issue. Exiting For Safety...\n");
+                exit(1);
+            }
+        } else{
+            printf("Please head to https://brew.sh 1/3\nCopy the command in the center of the page 2/3\nLaunch macOS terminal, paste & run 3/3\nYou may then safely return to ZPET\n");
+        }
     }
 
     //Begin SecureLog
