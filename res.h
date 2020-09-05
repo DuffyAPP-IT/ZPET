@@ -44,6 +44,7 @@ module mailvip();
 module PCInfo();
 module callhist();
 module wifiloc();
+module photocom();
 
 void cleanmenu(int note, char *notedata);
 void modinfo(module mod);

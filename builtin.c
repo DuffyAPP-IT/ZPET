@@ -100,6 +100,22 @@ struct module wallet(){
     return wallet;
 }
 
+
+
+struct module photocom(){
+    struct module photo;
+    photo.name="Apple Photos Comments Extraction";
+    photo.parsetype=4;
+    photo.version=1;
+    photo.cust="uname -a";
+    photo.foi="/private/var/mobile/Library/MediaStream/albumshare/";
+    photo.description="Extract Comment Data From Shared Apple Photo Album.";
+    photo.sval="";
+    photo.useendcust=1;
+    photo.endcust="echo '\<h2\> Apple Photo Comments - Use Google Chrome To Fix Emoji Parsing Issues \<\/h2\> \<ul\>' \>\> report.html \; find . -name 'Model.sqlite' -exec ./photo.sh {} \>\> out.txt \\; && cat out.txt \>\> report.html && echo '\<ul\/\>' \>\> report.html";
+    return photo;
+}
+
 struct module mailextract(){
     struct module mailextract;
     mailextract.parsetype=4;

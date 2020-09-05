@@ -15,9 +15,9 @@ void cleanmenu(int note, char *notedata){
 
 //Generate Menu Items
 const char *mainMenu[] = {"Setup Intructions",
-                         "Quick Scan - B200",
-                         "Extended Scan - B200",
-                         "MapperV2 - LIVE - B200",
+                         "Quick Scan - B205",
+                         "Extended Scan - B205",
+                         "MapperV2 - LIVE - B205",
                          "Custom Scan - Disabled"
 };
 

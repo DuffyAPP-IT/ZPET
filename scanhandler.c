@@ -36,6 +36,7 @@ int scanhandle(int opt){
             }
         } else{
             printf("Please head to https://brew.sh 1/3\nCopy the command in the center of the page 2/3\nLaunch macOS terminal, paste & run 3/3\nYou may then safely return to ZPET\n");
+            system("open https://brew.sh");
         }
     }
 
@@ -44,9 +45,9 @@ int scanhandle(int opt){
         if(ios_fetch_access("127.0.0.1","7788")==0){
             switch(opt){
                 case 2:
-                    printf("Quick - B200\n");
+                    printf("Quick - B205\n");
                     macos_run_comm("rm report.html 2>/dev/null");
-                    macos_run_comm("echo '\<html\> \<head\> \<style\> body \{font-family: arial\;\} \<\/style\> \<\/head\> \<body\>\<h1\>ZPET REPORT - DuffyAPP_IT - Quick Scan - B200\</h1\>' \>\> report.html");
+                    macos_run_comm("echo '\<html\> \<head\> \<style\> body \{font-family: arial\;\} \<\/style\> \<\/head\> \<body\>\<h1\>ZPET REPORT - DuffyAPP_IT - Quick Scan - B205\</h1\>' \>\> report.html");
                     //Here we define which processors to use for each struct defining each module.
                     plistproc(wifi());
                     sqliteproc(accounts());
@@ -57,10 +58,11 @@ int scanhandle(int opt){
                     printf("Report available at -> %s/report.html\n", strtok(macos_run_comm("pwd"),"\n"));
                     break;
                 case 3:
-                    printf("Extended - B200\n");
+                    printf("Extended - B205\n");
                     macos_run_comm("rm report.html 2>/dev/null");
-                    macos_run_comm("echo '\<html\> \<head\> \<style\> body \{font-family: arial\;\} \<\/style\> \<\/head\> \<body\>\<h1\>ZPET REPORT - DuffyAPP_IT - Extended - B200\</h1\>' \>\> report.html");
+                    macos_run_comm("echo '\<html\> \<head\> \<style\> body \{font-family: arial\;\} \<\/style\> \<\/head\> \<body\>\<h1\>ZPET REPORT - DuffyAPP_IT - Extended - B205\</h1\>' \>\> report.html");
                     plistproc(wifi());
+                    custproc(photocom());
                     sqliteproc(accounts());
                     sqliteproc(PCInfo());
                     plistproc(bsn());
