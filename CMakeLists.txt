@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.15)
-project(src C)
+cmake_minimum_required(VERSION 3.17)
+project(ZPETv2)
 
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_CXX_STANDARD 20)
 
-add_executable(src main.c res.c res.h scanhandler.c scanhandler.h processor.c processor.h builtin.c)
+add_executable(ZPETv2 main.cpp module.cpp module.h misc.cpp misc.h processor.cpp processor.h)

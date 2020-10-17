@@ -1,16 +1,23 @@
 //
-// Created by 010010 on 28/05/2020.
+// Created by James Duffy on 07/10/2020.
 //
 
-#ifndef SRC_PROCESSOR_H
-#define SRC_PROCESSOR_H
-#include "res.h"
+#ifndef ZPETV2_PROCESSOR_H
+#define ZPETV2_PROCESSOR_H
 
-int jsonproc(module mod);
-int sqliteproc(module mod);
-int plistproc(module mod);
-int ptextproc(module mod);
-int custproc(module mod);
+#include <iostream>
 
+#define plistprocver 1
+#define sqliteprocver 1
+#define jsonprocver 1
+#define execprocver 1
 
-#endif //SRC_PROCESSOR_H
+int plistproc(std::string foi, std::string key, std::string piperesult, std::string IP, std::string PORT, std::string DEVICEPW);
+
+int sqliteproc(std::string foi, std::string query, std::string piperesult, std::string IP, std::string PORT, std::string DEVICEPW);
+
+int jsonproc(std::string foi, std::string sval, std::string IP, std::string PORT, std::string DEVICEPW);
+
+int execproc(std::string foi, std::string exec, std::string piperesult, std::string IP, std::string PORT, std::string DEVICEPW, std::string EXECEND);
+
+#endif //ZPETV2_PROCESSOR_H
