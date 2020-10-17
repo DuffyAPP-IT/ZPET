@@ -12,4 +12,4 @@ The data is extracted live from the device and processed immediately on the host
 
 The software has been compiled to run on macOS High Sierra and above, although should be compatible with 10.12 as there are not any APIs in use for ZPET that are specific to newer macOS versions. In a future release, I will recompile for a lower minimum operating system version in order to maximise the amount of compatible machines.
 
-# Linux + Windows Support Is Actively Being Worked On
+Linux + Windows Support is actively being worked on and will be available in future updates.
