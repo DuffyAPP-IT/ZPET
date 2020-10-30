@@ -1,8 +1,17 @@
 //
+//  module.cpp
+//  ZPET
+//
+//  Created by James Duffy on 21/10/2020.
+//  Copyright © 2020 James Duffy. All rights reserved.
+//
+
+#include "module.hpp"
+
+//
 // Created by 010011 on 06/10/2020.
 //
 
-#include "module.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -67,21 +76,21 @@ Module loadModule(std::string modsrctxt){
         while (getline(modsrc,line) )
         {
             switch (linenum) {
-                case 0:
+                    case 0:
                     mod.displayname = line;
-                case 1:
+                    case 1:
                     mod.description = line;
-                case 2:
+                    case 2:
                     mod.author = line;
-                case 3:
+                    case 3:
                     mod.foi = line;
-                case 4:
+                    case 4:
                     mod.parsetype = line;
-                case 5:
+                    case 5:
                     mod.filterval = line;
-                case 6:
+                    case 6:
                     mod.execend = line;
-                case 7:
+                    case 7:
                     mod.pipeprocess = line;
             }
             linenum++;

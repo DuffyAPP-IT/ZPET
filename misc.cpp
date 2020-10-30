@@ -1,16 +1,24 @@
 //
+//  misc.cpp
+//  ZPET
+//
+//  Created by James Duffy on 21/10/2020.
+//  Copyright © 2020 James Duffy. All rights reserved.
+//
+
+//
 // Created by 010011 on 06/10/2020.
 //
 
-#include "module.h"
+#include "module.hpp"
 #include "misc.h"
-#include "processor.h"
+#include "processor.hpp"
 
 #include <unistd.h>
 
 int verifyPrereqs(){
     switch (OS) {
-        case 1:
+            case 1:
             if(macOS_GetExit("which iproxy >/dev/null")==0){
                 std::cout << "----------\nLOADED iProxy" << std::endl;
                 usleep(200 * 1000);
@@ -25,7 +33,7 @@ int verifyPrereqs(){
                 } else return 1;
             } else return 1;
             break;
-        case 2:
+            case 2:
             if(macOS_GetExit("which iproxy")==0){
                 std::cout << "Found iProxy" << std::endl;
                 if(macOS_GetExit("which scp")==0){
@@ -40,7 +48,7 @@ int verifyPrereqs(){
         default:
             return 2;
     }
-
+    return 1;
 }
 
 
@@ -86,27 +94,29 @@ int scanHandler(Module mod,const std::string& DEVICEIP,const std::string& DEVICE
 int iosReceive(std::string foi,std::string deviceip,std::string devicepwd){
     //remove old file because folder cannot overwrite file... possibly better solution for this.
     std::system("sudo rm SENSITIVE/local 2>/dev/null");
-   if(is_file_exist("resources/sshpass")) {
-       std::string receive = "resources/sshpass -p " + devicepwd + " scp -r -P 7788" +
-                             " -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' root@" + deviceip + ":" +
-                             foi + " SENSITIVE/local 2>/dev/null >/dev/null";
-//       std::cout << receive;
-       const char *exec = receive.c_str();
-       int ret = system(exec);
-       if (WEXITSTATUS(ret) == 0)
-           return 0;
-       else
-           return 1;
-   }
-       return 0;
+    if(is_file_exist("resources/sshpass")) {
+        std::string receive = "resources/sshpass -p " + devicepwd + " scp -r -P 7788" +
+        " -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' root@" + deviceip + ":" +
+        foi + " SENSITIVE/local 2>/dev/null >/dev/null";
+        //       std::cout << receive;
+        const char *exec = receive.c_str();
+        int ret = system(exec);
+        if (WEXITSTATUS(ret) == 0)
+        return 0;
+        else
+        return 1;
+    }
+    return 0;
 }
 
 int macOS_GetExit(std::string command){
     const char *exec = command.c_str();
     int ret = system(exec);
     if (WEXITSTATUS(ret) == 0)
-        return 0;
+    return 0;
     else
-        return 1;
+    return 1;
 }
+
+
 

@@ -1,0 +1,6 @@
+WiFi SSID Processor
+This Module Parses The Saved WiFi SSIDs From The Connected Device
+DuffyAPP_IT
+/private/var/preferences/SystemConfiguration/com.apple.wifi.plist
+plist
+SSID_STR

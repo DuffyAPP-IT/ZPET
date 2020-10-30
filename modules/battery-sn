@@ -1,0 +1,7 @@
+Battery Serial Number ID
+Identify The Battery Serial Number (Of Connected Device)
+DuffyAPP_IT
+/private/var/preferences/com.apple.batterydata.cyclecount.plist
+plist
+Serial
+

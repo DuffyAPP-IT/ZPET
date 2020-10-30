@@ -1,0 +1,8 @@
+Last Device Update Timestamp
+This Module Will Extract The Stored Last Update Time/Date From The Connected Device.
+DuffyAPP_IT
+/private/var/preferences/SystemConfiguration/com.apple.wifi.plist
+plist
+deviceUpdatedDate
+
+

@@ -1,8 +1,22 @@
 //
-// Created by 010011 on 06/10/2020.
+//  misc.h
+//  ZPET
+//
+//  Created by James Duffy on 21/10/2020.
+//  Copyright © 2020 James Duffy. All rights reserved.
 //
 
+#ifndef misc_h
+#define misc_h
 
+//Standard Library Imports
+#include <iostream>
+#include <cstdlib>
+#include <string>
+#include <sys/stat.h>
+#include <unistd.h>
+
+//Platform specific definitions
 #if __APPLE__
 //Compat Defines
 #define PLIST_COMPAT 1
@@ -21,17 +35,10 @@
 #define JSON_COMPAT 1
 #define plist "plutil"
 #define OS 2
-
-
 #endif
 
 
-
-#ifndef ZPETV2_MISC_H
-#define ZPETV2_MISC_H
-
-#include "module.h"
-
+#include "module.hpp"
 int verifyPrereqs();
 
 
@@ -42,4 +49,5 @@ int iosReceive(std::string foi,std::string deviceip,std::string devicepwd);
 
 int macOS_GetExit(std::string command);
 
-#endif //ZPETV2_MISC_H
+
+#endif /* misc_h */

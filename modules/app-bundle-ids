@@ -1,0 +1,7 @@
+Installed iOS Applications
+Fetch Installed iOS User Applications from FrontBoard
+DuffyAPP_IT
+/var/mobile/Library/FrontBoard/applicationState.db
+sqlite
+SELECT DISTINCT Application_identifier FROM kvs_debug LIMIT 8
+

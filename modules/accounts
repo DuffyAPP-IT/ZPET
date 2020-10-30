@@ -1,0 +1,7 @@
+iOS Native Accounts
+Extracts iOS Native Accounts (Mail, iCloud, Exchange etc)
+DuffyAPP_IT
+/private/var/mobile/Library/Accounts/Accounts3.sqlite
+sqlite
+SELECT DISTINCT ZUSERNAME FROM ZACCOUNT
+

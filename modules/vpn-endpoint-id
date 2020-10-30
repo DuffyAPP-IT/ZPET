@@ -1,0 +1,8 @@
+VPN Endpoint Identifier
+Fetches The Username & Endpoint For Saved Apple-Native VPN
+DuffyAPP_IT
+/private/var/preferences/com.apple.networkextension.plist
+plist
+
+
+grep -a @ -B 1

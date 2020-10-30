@@ -1,0 +1,8 @@
+Apple Wallet Pass Extraction
+Extract Apple Wallet Pass Information
+DuffyAPP_IT
+/var/mobile/Library/Passes/Cards/
+exec
+find . -name 'pass.json' -exec python -m json.tool {} 2>/dev/null \; 
+Echo 'COMPLETE'
+grep description | cut -f2- -d':' | sort --unique

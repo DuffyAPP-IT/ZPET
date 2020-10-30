@@ -1,0 +1,7 @@
+iOS Location Data (ThreeBars SQLITE)
+Fetch iOS Historical Location Data - LAT,LNG,(WiFi AP MAC)
+DuffyAPP_IT
+/private/var/root/Library/Caches/com.apple.wifid/ThreeBars.sqlite
+sqlite
+SELECT ZLAT, ZLNG, ZBSSID from ZACCESSPOINT LIMIT 5
+
