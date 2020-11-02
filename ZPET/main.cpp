@@ -24,11 +24,11 @@ int main(int argc, char *argv[]) {
     "\033[1;31m    / /| |__) | |__     | |    \n"
     "\033[1;36m   / / |  ___/|  __|    | |    \n"
     "\033[1;34m  / /__| |    | |____   | |    \n"
-    "\033[1;31m /_____|_|    |______|  |_|\033[0m v2-" << rand() << std::endl;
+    "\033[1;31m /_____|_|    |______|  |_|\033[0m v2-17000" << std::endl;
     
     //BASIC INIT STARTS HERE
     
-    system("pwd");
+//    system("pwd");
 
     //Check if running as root...
     if(getuid()!=0){
