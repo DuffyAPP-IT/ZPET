@@ -27,6 +27,8 @@ int main(int argc, char *argv[]) {
     "\033[1;31m /_____|_|    |______|  |_|\033[0m v2-" << rand() << std::endl;
     
     //BASIC INIT STARTS HERE
+    
+    system("pwd");
 
     //Check if running as root...
     if(getuid()!=0){
@@ -45,6 +47,7 @@ int main(int argc, char *argv[]) {
             std::cout << "Does The SENSITIVE Directory Already Exist? Back It Up & Delete It!..." << std::endl;
             return 1;
         }
+        system("sudo chmod -R 777 SENSITIVE"); //set perms
     }
     
     /*
@@ -114,7 +117,7 @@ int main(int argc, char *argv[]) {
     if(macOS_GetExit("echo 'Device Serial Number:' &&ideviceinfo | grep SerialNumber: | grep -v Base | grep -v Chip | grep -v MLB | grep -v Wireless |  cut -f2 -d':' | sed 's/^[ \t]*//'")) return 1;
     
     std::cout << "-----\n\nIf the above information does NOT pertain to the device you wish to extract data from - you now have 10 seconds to hit CTRL+C to end execution..." << std::endl;
-    sleep(10);
+    sleep(3);
     
     //process loaded mods
     int err_count = 0; //if error limit is hit, stop execution.

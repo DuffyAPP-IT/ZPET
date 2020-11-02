@@ -27,9 +27,12 @@ int verifyPrereqs(){
                     usleep(200 * 1000);
                     if(macOS_GetExit("ls /usr/libexec/plistbuddy >/dev/null ")==0){
                         std::cout << "LOADED plistbuddy (for plist processing)" << std::endl;
-                        usleep(200 * 1000);
-                        return 0;
-                    }
+                        if(macOS_GetExit("which truncate >/dev/null ")==0){
+                            std::cout << "LOADED truncate (for file manipulation)" << std::endl;
+                            usleep(200 * 1000);
+                            return 0;
+                        } else return 1;
+                    } else return 1;
                 } else return 1;
             } else return 1;
             break;
@@ -40,6 +43,7 @@ int verifyPrereqs(){
                     std::cout << "Found SCP" << std::endl;
                     if(macOS_GetExit("plutil")==0){
                         std::cout << "Found Plist Processor" << std::endl;
+                        usleep(200 * 1000);
                         return 0;
                     } else return 1;
                 } else return 1;
@@ -93,18 +97,21 @@ int scanHandler(Module mod,const std::string& DEVICEIP,const std::string& DEVICE
 
 int iosReceive(std::string foi,std::string deviceip,std::string devicepwd){
     //remove old file because folder cannot overwrite file... possibly better solution for this.
-    std::system("sudo rm SENSITIVE/local 2>/dev/null");
+    std::system("sudo rm -rf SENSITIVE 2>/dev/null && mkdir SENSITIVE");
     if(is_file_exist("resources/sshpass")) {
         std::string receive = "resources/sshpass -p " + devicepwd + " scp -r -P 7788" +
         " -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' root@" + deviceip + ":" +
-        foi + " SENSITIVE/local 2>/dev/null >/dev/null";
+        foi + " SENSITIVE/local 2>/dev/null";
+//        std::cout << receive;
+        
         //       std::cout << receive;
         const char *exec = receive.c_str();
         int ret = system(exec);
-        if (WEXITSTATUS(ret) == 0)
+
+        if (WEXITSTATUS(ret) == 0){
+//            std::cout << "Finished Copy" << std::endl;
         return 0;
-        else
-        return 1;
+        } else return 1;
     }
     return 0;
 }

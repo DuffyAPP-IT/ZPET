@@ -61,17 +61,13 @@ int jsonproc(std::string foi, std::string sval, std::string IP, std::string PORT
 int execproc(std::string foi, std::string exec, std::string piperesult, std::string IP, std::string PORT, std::string DEVICEPW, std::string execend){
     if(JSON_COMPAT!=1) return 2; //1 meaning compatible in this case
     //    printf("execproc hit\n");
-    if(iosReceive(foi,std::move(IP),DEVICEPW)==0){
-        char proc[800];
-        std::sprintf(proc,"%s",exec.c_str());
-        if(piperesult.length()>2){
-            //            std::cout << "PIPE-RES is -> " << piperesult << std::endl;
-            std::sprintf(proc,"%s | %s",proc,piperesult.c_str());
-        }
-        std::system(proc);
-        return 0;
-    } else{
-        std::cout << "Module Could Not Execute - iosRecieve Failed...\nIs The Target Device Connected & Checkra1n'ed?" << std::endl;
-        return 1;
+    iosReceive(foi,std::move(IP),DEVICEPW);
+    char proc[800];
+    std::sprintf(proc,"%s",exec.c_str());
+    if(piperesult.length()>2){
+        //            std::cout << "PIPE-RES is -> " << piperesult << std::endl;
+        std::sprintf(proc,"%s | %s",proc,piperesult.c_str());
     }
+    std::system(proc);
+    return 0;
 }
