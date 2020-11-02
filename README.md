@@ -1,7 +1,6 @@
 <img src="OUT%20ZPET%20DESIGN%20FINAL-05.png">
 
 # ZPETv2 - Open Source iOS Forensics
-![ZPET BUILD](https://github.com/DuffyAPP-IT/ZPET/workflows/ZPET%20BUILD/badge.svg?branch=master)
 
 **ZPET** is designed to allow for the analysis of iDevices in **Before First Unlock (BFU)** Mode. ZPET will allow for the extraction of various pieces of information which may be considered sensitive.
 Examples include **Installed Application Identifiers**, **WiFi Access Point Information**, **Apple ID** & **Other Accounts on-device**.
