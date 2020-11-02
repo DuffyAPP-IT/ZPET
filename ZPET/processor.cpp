@@ -15,7 +15,11 @@ int plistproc(std::string foi, std::string key, std::string piperesult, std::str
     if(iosReceive(foi,IP,DEVICEPW)==0){
         //implement C++ Strings here
         char proc[800];
-        std::sprintf(proc,"%s -c 'print \"%s:\"' SENSITIVE/local",plist,key.c_str());
+        if(key.length()==0){
+            std::sprintf(proc,"plutil -p SENSITIVE/local 2>&1");
+        } else{
+            std::sprintf(proc,"plutil -extract %s xml1 -o - SENSITIVE/local 2>&1 | tail -2 | grep -v plist | cut -f1 -d'/' | sed 's/^<\(.*\)/\1/'| sed 's/^>\(.*\)/\1/' | cut -f2 -d'>' | cut -f1 -d'<'",key.c_str());
+        }
         if(piperesult.length()>2){
             //            std::cout << "PIPE-RES is -> " << piperesult << std::endl;
             std::sprintf(proc,"%s | %s",proc,piperesult.c_str());
