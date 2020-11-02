@@ -102,9 +102,8 @@ int iosReceive(std::string foi,std::string deviceip,std::string devicepwd){
         std::string receive = "resources/sshpass -p " + devicepwd + " scp -r -P 7788" +
         " -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' root@" + deviceip + ":" +
         foi + " SENSITIVE/local 2>/dev/null";
-//        std::cout << receive;
         
-        //       std::cout << receive;
+//       std::cout << receive;
         const char *exec = receive.c_str();
         int ret = system(exec);
 

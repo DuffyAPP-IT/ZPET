@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
     if(macOS_GetExit("echo 'Device Serial Number:' &&ideviceinfo | grep SerialNumber: | grep -v Base | grep -v Chip | grep -v MLB | grep -v Wireless |  cut -f2 -d':' | sed 's/^[ \t]*//'")) return 1;
     
     std::cout << "-----\n\nIf the above information does NOT pertain to the device you wish to extract data from - you now have 10 seconds to hit CTRL+C to end execution..." << std::endl;
-    sleep(3);
+    sleep(10);
     
     //process loaded mods
     int err_count = 0; //if error limit is hit, stop execution.

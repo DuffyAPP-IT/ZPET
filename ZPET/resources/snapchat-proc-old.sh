@@ -85,6 +85,51 @@ min=10 #testing
 if [ "$length" -gt "$min" ]; then
 echo "$p" | xxd -r -p > $count.outsc
 
+
+#        Remove first 72 bytes
+tail +60c $count.outsc > $count.outsc.truncated && mv $count.outsc.truncated $count.outsc
+
+#        Remove last 75 bytes
+
+newfsize=$(($(stat -f%z $count.outsc) - 72)) 2>/dev/null
+truncate -s $newfsize $count.outsc 2>/dev/null
+
+#        tr -d '\n\r' < $count.outsc
+
+hexdump $count.outsc | grep '8b 01 0a 88'
+isvid=$?
+if [ $isvid -eq 0 ]
+then
+
+newfsize=$(($(stat -f%z $count.outsc) - 75)) 2>/dev/null
+truncate -s $newfsize $count.outsc
+
+fi
+
+hexdump $count.outsc | grep '87 01 0a 84'
+isvid=$?
+if [ $isvid -eq 0 ]
+then
+tail +149c $count.outsc > $count.outsc.truncated && mv $count.outsc.truncated $count.outsc
+
+newfsize=$(($(stat -f%z $count.outsc) - 162)) 2>/dev/null
+truncate -s $newfsize $count.outsc
+
+fi
+
+hexdump $count.outsc | grep '8a 01 0a 87'
+isvid=$?
+if [ $isvid -eq 0 ]
+then
+tail +162c $count.outsc > $count.outsc.truncated && mv $count.outsc.truncated $count.outsc
+
+newfsize=$(($(stat -f%z $count.outsc) - 188)) 2>/dev/null
+truncate -s $newfsize $count.outsc
+
+fi
+
+
+
 echo -e '\n----------'
 #            echo $count.sid
 #            echo $count.outsc
@@ -99,19 +144,7 @@ cat $count.stime
 echo -n "Message Read Date/Time -> "
 cat $count.rtime
 
-if protoc --decode_raw < $count.outsc | grep "351m" >/dev/null; then
-protoc --decode_raw < $count.outsc | grep 11 -A2 | grep ' 1:'
-fi
-if protoc --decode_raw < $count.outsc | grep "307f" >/dev/null; then
-protoc --decode_raw < $count.outsc | grep '4 {' -A2 | grep '1:'
-fi
-if protoc --decode_raw < $count.outsc | grep "010cl" >/dev/null; then
-protoc --decode_raw < $count.outsc | grep '4 {' -A2 | grep '1:'
-fi
-
-
-
-#cat $count.outsc
+cat $count.outsc
 rm $count.outsc
 count=$[$count +1]
 

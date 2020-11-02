@@ -1,7 +1,7 @@
 SnapChat One-Click Processor
 Extracts Information From The SnapChat Application
 DuffyAPP_IT
-/private/var/mobile/Containers/Data/Application/5D0DBD47-9E78-4200-B238-CD4FCCACAB8F
+/private/var/mobile/Containers/Data/Application
 exec
 echo 'COPIED'
 sudo ./resources/snapchat-proc.sh
