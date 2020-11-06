@@ -36,7 +36,6 @@ echo "---------"
 sleep 5
 
 echo -e "----------\nFetching Account Information...\n---------"
-rm adatain
 sqlite3 $docobj -line "select hex(p) from userinfo__coreuserdata" | cut -f2 -d'=' >> adatain
 
 if [ -f adatain ]
@@ -61,9 +60,12 @@ count=$[$count +1]
 done<adataout
 fi
 
+rm adatain
+rm adataout
+
 echo "---------"
 
-sleep 500
+sleep 5
 
 sqlline="select hex(message_content) from conversation_message"
 sid="select sender_id from conversation_message"
