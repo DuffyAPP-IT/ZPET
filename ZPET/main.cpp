@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
     
     //BASIC INIT STARTS HERE
     
-//    system("pwd");
+    system("pwd");
 
     //Check if running as root...
     if(getuid()!=0){

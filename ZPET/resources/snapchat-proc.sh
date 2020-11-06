@@ -13,6 +13,7 @@ echo "v1 - SpiderKIT";
 scdb=$(sudo find ./SENSITIVE -name "scdb-27.sqlite3")
 arroyo=$(sudo find ./SENSITIVE -name "arroyo.db")
 geofilter=$(sudo find . -name "com.pinterest.PINDiskCache.GeoFilterRenderedImages")
+docobj=$(sudo find . -name "primary.docobjects");
 
 #echo $arroyo
 #echo $scdb
@@ -28,10 +29,50 @@ find $geofilter -size +5k -exec tesseract {} stdout --dpi 72 2>/dev/null \;
 
 sleep 5
 
+
+echo -e "----------\nFetching Friends List...\n---------"
+sqlite3 $docobj -line "select legacyConversationId from index_arroyomigration__oneononemetadata_draftlegacyConversationId" | cut -f2 -d'='
+echo "---------"
+sleep 5
+
+echo -e "----------\nFetching Account Information...\n---------"
+rm adatain
+sqlite3 $docobj -line "select hex(p) from userinfo__coreuserdata" | cut -f2 -d'=' >> adatain
+
+if [ -f adatain ]
+then
+sed '/^[[:space:]]*$/d' adatain > adataout
+count=0
+while read p; do
+echo "$p" | xxd -r -p > $count.adata
+#rm $count.adata
+#        Remove first 72 bytes
+tail +76c $count.adata > $count.adata.truncated && mv $count.adata.truncated $count.adata
+
+if [ -f $count.adata ]
+then
+sleep 1
+echo 'PRINTING DATA...'
+sleep 1
+cat $count.adata
+fi
+rm $count.adata
+count=$[$count +1]
+done<adataout
+fi
+
+echo "---------"
+
+sleep 500
+
 sqlline="select hex(message_content) from conversation_message"
 sid="select sender_id from conversation_message"
 senttime="SELECT DATETIME(ROUND(creation_timestamp / 1000), 'unixepoch') AS isodate FROM conversation_message"
 readtime="SELECT DATETIME(ROUND(read_timestamp / 1000), 'unixepoch') AS isodate FROM conversation_message"
+
+friends="SELECT hex(p) FROM arroyomigration__oneononemetadata_draft";
+
+#sqlite3 $docobj -line "$friends" | cut -f2 -d'=' >> fdatain
 
 sqlite3 $arroyo -line "$sqlline" | cut -f2 -d'=' >> blobdata
 
@@ -40,6 +81,19 @@ sqlite3 $arroyo -line "$sid" | cut -f2 -d'=' >> siddatain
 sqlite3 $arroyo -line "$senttime" | cut -f2 -d'=' >> senttimein
 
 sqlite3 $arroyo -line "$readtime" | cut -f2 -d'=' >> readtimein
+
+##Process Friend Data Column
+#if [ -f fdatain ]
+#then
+#sed '/^[[:space:]]*$/d' fdatain > fdataout
+#count=0
+#while read p; do
+##echo "$p" | xxd -r -p > $count.fdata
+#protoc --decode_raw < $count.fdata
+#count=$[$count +1]
+#done<fdataout
+#rm fdataout
+#fi
 
 #Process Sender ID Column
 if [ -f siddatain ]
