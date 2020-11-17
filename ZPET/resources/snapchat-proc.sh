@@ -36,6 +36,7 @@ echo "---------"
 sleep 5
 
 echo -e "----------\nFetching Account Information...\n---------"
+rm adatain
 sqlite3 $docobj -line "select hex(p) from userinfo__coreuserdata" | cut -f2 -d'=' >> adatain
 
 if [ -f adatain ]
@@ -45,7 +46,7 @@ count=0
 while read p; do
 echo "$p" | xxd -r -p > $count.adata
 #rm $count.adata
-#        Remove first 72 bytes
+#        Remove first 76 bytes
 tail +76c $count.adata > $count.adata.truncated && mv $count.adata.truncated $count.adata
 
 if [ -f $count.adata ]
@@ -60,12 +61,9 @@ count=$[$count +1]
 done<adataout
 fi
 
-rm adatain
-rm adataout
-
 echo "---------"
 
-sleep 5
+sleep 500
 
 sqlline="select hex(message_content) from conversation_message"
 sid="select sender_id from conversation_message"
@@ -155,6 +153,7 @@ cat $count.stime
 echo -n "Message Read Date/Time -> "
 cat $count.rtime
 
+echo -n "Message Data -> "
 if protoc --decode_raw < $count.outsc | grep "351m" >/dev/null; then
 protoc --decode_raw < $count.outsc | grep 11 -A2 | grep ' 1:'
 fi

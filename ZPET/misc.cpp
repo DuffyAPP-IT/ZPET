@@ -14,21 +14,22 @@
 #include "misc.h"
 #include "processor.hpp"
 
+
 #include <unistd.h>
 
 int verifyPrereqs(){
     switch (OS) {
             case 1:
             if(macOS_GetExit("which iproxy >/dev/null")==0){
-                std::cout << "----------\nLOADED iProxy" << std::endl;
+                std::cout << "[+] Loaded iProxy" << std::endl;
                 usleep(200 * 1000);
                 if(macOS_GetExit("which scp >/dev/null")==0){
-                    std::cout << "LOADED SCP" << std::endl;
+                    std::cout << "[+] Loaded SCP" << std::endl;
                     usleep(200 * 1000);
-                    if(macOS_GetExit("ls /usr/libexec/plistbuddy >/dev/null ")==0){
-                        std::cout << "LOADED plistbuddy (for plist processing)" << std::endl;
+                    if(macOS_GetExit("which plutil >/dev/null")==0){
+                        std::cout << "[+] Loaded plutil" << std::endl;
                         if(macOS_GetExit("which truncate >/dev/null ")==0){
-                            std::cout << "LOADED truncate (for file manipulation)" << std::endl;
+                            std::cout << "[+] Loaded truncate" << std::endl;
                             usleep(200 * 1000);
                             return 0;
                         } else return 1;
@@ -38,11 +39,11 @@ int verifyPrereqs(){
             break;
             case 2:
             if(macOS_GetExit("which iproxy")==0){
-                std::cout << "Found iProxy" << std::endl;
+                std::cout << "[+] Loaded iProxy" << std::endl;
                 if(macOS_GetExit("which scp")==0){
-                    std::cout << "Found SCP" << std::endl;
+                    std::cout << "[+] Loaded SCP" << std::endl;
                     if(macOS_GetExit("plutil")==0){
-                        std::cout << "Found Plist Processor" << std::endl;
+                        std::cout << "[+] Loaded plutil" << std::endl;
                         usleep(200 * 1000);
                         return 0;
                     } else return 1;
@@ -102,8 +103,7 @@ int iosReceive(std::string foi,std::string deviceip,std::string devicepwd){
         std::string receive = "resources/sshpass -p " + devicepwd + " scp -r -P 7788" +
         " -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' root@" + deviceip + ":" +
         foi + " SENSITIVE/local 2>/dev/null";
-        
-//       std::cout << receive;
+       
         const char *exec = receive.c_str();
         int ret = system(exec);
 

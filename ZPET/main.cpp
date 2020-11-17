@@ -27,9 +27,9 @@ int main(int argc, char *argv[]) {
     "\033[1;31m /_____|_|    |______|  |_|\033[0m v2-17000" << std::endl;
     
     //BASIC INIT STARTS HERE
-    
-    system("pwd");
-
+//    if(DEBUGM){
+//        system("pwd");
+//    }
     //Check if running as root...
     if(getuid()!=0){
         std::cout << "ZPETv2 Must Be Run As Root! (sudo ./ZPET)" << std::endl;
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
     }
     
     if (!is_file_exist(moduleDir.c_str())) {
-        std::cout << "ZPET component 'moduleloader' is missing!\nIf you downloaded the repository from GitHub, you will be missing components...\nthat are bundled in the release build. Check releases!" << std::endl;
+        std::cout << "ZPET component 'moduleloader' is missing!\nIf you downloaded the repository from GitHub, you will be missing components...\nthese extra components are bundled in the release build. Check releases!" << std::endl;
         return 1;
     }
     
@@ -62,18 +62,19 @@ int main(int argc, char *argv[]) {
     //BASIC INIT ENDS HERE
     
     //TODO - Fix return character not being detected/escaping from input.
-    std::cout << "--------\nDevice SSH Port? (44): ";
+    std::cout << "\n[?] Device SSH Port? (44): ";
     std::cin >> deviceport;
     if(deviceport.length()==0) deviceport = "44"; //not functional... cin doesn't detect return character as input..?
-    std::cout << "Device Root Password? (alpine): ";
+    std::cout << "[?] Device Root Password? (alpine): ";
     std::cin >> devicepw;
     if(devicepw.length()==0) devicepw = "alpine"; //not functional... cin doesn't detect return character as input..?
+    
     
     /*
      Counts modules listed in moduleloader txt to initialise
      a counter (how many modules to import)
      */
-    std::cout << "Importing Modules... ";
+    std::cout << "\n[+] Importing Modules... ";
     sleep(1);
     Module mods[countLinesInTxt("modules/moduleloader")];
     //Populate mods array with modules while counting imported mods
@@ -90,7 +91,7 @@ int main(int argc, char *argv[]) {
         }
         popmodtxts.close();
         loadedmodcount = linenum;
-        std::cout << "Imported " << loadedmodcount << " modules!" << std::endl;
+        std::cout << " Imported " << loadedmodcount << " modules!" << std::endl;
     }
     
     //artifical sleep to allow user to observe output.
@@ -98,12 +99,12 @@ int main(int argc, char *argv[]) {
     sleep(3);
     
     //Initialise SSH
-    std::cout << "Initialising SSH... ";
-    std::string ssh_init = "iproxy 7788 " + deviceport + " 2>/dev/null >/dev/null &";
+    std::cout << "[+] Initialising SSH... ";
+    std::string ssh_init = "sudo iproxy 7788 " + deviceport + " 2>/dev/null >/dev/null &";
     const char *exec = ssh_init.c_str();
     int ret = system(exec);
     if (WEXITSTATUS(ret) != 0){
-        std::cout << "\nUSB-SSH Proxy Could Not Be Initialised...\nIs libimobiledevice Installed?";
+        std::cout << "\n[!] iProxy Could Not Be Initialised Correctly...\nIs libimobiledevice Installed? (try 'brew install libimobiledevice')";
         return 1;
     }
     sleep(2);
@@ -112,11 +113,11 @@ int main(int argc, char *argv[]) {
     //Check device is connected
     
     //Print Basic Device Information
-    std::cout << "\n-----\nBasic Device Information:" << std::endl;
+    std::cout << "\n-----\n[+] Basic Device Information:" << std::endl;
     if(macOS_GetExit("echo 'Device Name:' && ideviceinfo | grep DeviceName | cut -f2 -d':' | sed 's/^[ \t]*//'")) return 1;
     if(macOS_GetExit("echo 'Device Serial Number:' &&ideviceinfo | grep SerialNumber: | grep -v Base | grep -v Chip | grep -v MLB | grep -v Wireless |  cut -f2 -d':' | sed 's/^[ \t]*//'")) return 1;
     
-    std::cout << "-----\n\nIf the above information does NOT pertain to the device you wish to extract data from - you now have 10 seconds to hit CTRL+C to end execution..." << std::endl;
+    std::cout << "-----\n\n[*] If the above information does NOT pertain to the device you wish to extract data from - you now have 10 seconds to hit CTRL+C to end execution..." << std::endl;
     sleep(10);
     
     //process loaded mods
@@ -124,25 +125,25 @@ int main(int argc, char *argv[]) {
     int err_limit = 3;
     for(int i=0;i<(loadedmodcount);i++){
         if(err_count>=err_limit){
-            std::cout << "Error Limit Hit...Exiting For Safety - (check moduleloader!)" << std::endl;
+            std::cout << "[!] Error Limit Hit...Exiting For Safety - (check moduleloader!)" << std::endl;
             return 1;
         }
         if(mods[i].validate()==0){
             //            mods[i].info();
-            std::cout << "\nModule -> " << mods[i].displayname << "\nAuthor -> " << mods[i].author << std::endl;
+            std::cout << "\n[*] Module -> " << mods[i].displayname << "\n[*] Author -> " << mods[i].author << std::endl;
             sleep(1);
-            std::cout << "Module Output -> ...\n----------\n";
+            std::cout << "[*] Module Output -> ...\n----------\n";
             if(scanHandler(mods[i],deviceip,deviceport,devicepw)!=0){
                 err_count++;
-                std::cout << "Module " << i << " Sent For Processing But Did NOT Complete!" << std::endl;
+                std::cout << "[!] Module " << i << " (" << mods[i].displayname << ") Sent For Processing But Did NOT Complete! Is it up to date? " << std::endl;
             }
             std::cout << "----------" << std::endl;
         } else{
-            std::cout << "=========\nModule" << i << " did not pass the initial validator!\n=========\n";
+            std::cout << "=========\n[!] Module" << i << " did not pass the initial validator!\n=========\n";
         }
     }
     
     //Generic iproxy kill on exit - check *nix compatibility
-    system("pkill iproxy");
+//    system("pkill iproxy");
     return 0;
 }
