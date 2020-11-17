@@ -41,7 +41,7 @@
 
 
 #include "module.hpp"
-int verifyPrereqs();
+int verifyPrereqs(int functionType);
 
 
 int countLinesInTxt(char *txtname);

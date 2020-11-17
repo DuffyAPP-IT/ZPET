@@ -17,41 +17,47 @@
 
 #include <unistd.h>
 
-int verifyPrereqs(){
-    switch (OS) {
-            case 1:
-            if(macOS_GetExit("which iproxy >/dev/null")==0){
-                std::cout << "[+] Loaded iProxy" << std::endl;
-                usleep(200 * 1000);
-                if(macOS_GetExit("which scp >/dev/null")==0){
-                    std::cout << "[+] Loaded SCP" << std::endl;
+/*
+ verifyPrereqs ensures that correct prereqs for the individual OS are available.
+ Definitions for where each prerequesite should be located (for each OS) can be found in misc.h!
+ */
+int verifyPrereqs(int functionType){
+    if(functionType==3){
+        switch (OS) {
+                case 1:
+                if(macOS_GetExit("which iproxy >/dev/null")==0){
+                    std::cout << "[+] Loaded iProxy" << std::endl;
                     usleep(200 * 1000);
-                    if(macOS_GetExit("which plutil >/dev/null")==0){
-                        std::cout << "[+] Loaded plutil" << std::endl;
-                        if(macOS_GetExit("which truncate >/dev/null ")==0){
-                            std::cout << "[+] Loaded truncate" << std::endl;
+                    if(macOS_GetExit("which scp >/dev/null")==0){
+                        std::cout << "[+] Loaded SCP" << std::endl;
+                        usleep(200 * 1000);
+                        if(macOS_GetExit("which plutil >/dev/null")==0){
+                            std::cout << "[+] Loaded plutil" << std::endl;
+                            if(macOS_GetExit("which truncate >/dev/null ")==0){
+                                std::cout << "[+] Loaded truncate" << std::endl;
+                                usleep(200 * 1000);
+                                return 0;
+                            } else return 1;
+                        } else return 1;
+                    } else return 1;
+                } else return 1;
+                break;
+                case 2:
+                if(macOS_GetExit("which iproxy")==0){
+                    std::cout << "[+] Loaded iProxy" << std::endl;
+                    if(macOS_GetExit("which scp")==0){
+                        std::cout << "[+] Loaded SCP" << std::endl;
+                        if(macOS_GetExit("plutil")==0){
+                            std::cout << "[+] Loaded plutil" << std::endl;
                             usleep(200 * 1000);
                             return 0;
                         } else return 1;
                     } else return 1;
                 } else return 1;
-            } else return 1;
-            break;
-            case 2:
-            if(macOS_GetExit("which iproxy")==0){
-                std::cout << "[+] Loaded iProxy" << std::endl;
-                if(macOS_GetExit("which scp")==0){
-                    std::cout << "[+] Loaded SCP" << std::endl;
-                    if(macOS_GetExit("plutil")==0){
-                        std::cout << "[+] Loaded plutil" << std::endl;
-                        usleep(200 * 1000);
-                        return 0;
-                    } else return 1;
-                } else return 1;
-            } else return 1;
-            break;
-        default:
-            return 2;
+                break;
+            default:
+                return 2;
+        }
     }
     return 1;
 }
