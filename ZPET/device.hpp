@@ -20,14 +20,14 @@ public:
     std::string port; // 7788
     std::string ssh_pw; // alpine
     
-    std::string device_id; // Randomised ID for the current device within the current session
+    int device_id; // Randomised ID for the current device within the current session
     
     int major_os_ver; // 12,13,14 etc.
     int crypt_state; // BFU=1, AFU=2
     
-    int validate(); // checks current device data is valid and ready to be interpreted...
+    bool can_connnect; // checks for device access
     
-    bool can_connnect(); // checks for device access
+    int validate(); // checks current device data is valid and ready to be interpreted...
     
     void info(); // pretty print device information
 };

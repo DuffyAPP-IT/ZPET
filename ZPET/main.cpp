@@ -35,7 +35,11 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     
-    //moduleDir = modules/moduleloader
+    /*
+     ModuleLoader - Basic Prerequesite Check
+     'moduleloader' *must* be present for ZPETv2 core functionality
+     External modules are listed inside moduleloader for, well, loading!
+     */
     if (!is_file_exist(moduleDir.c_str())) {
         std::cout << "[!] ZPET component 'moduleloader' is missing!\nIf you downloaded the repository from GitHub, you will be missing components...\nThe extra components are bundled in the release build. Check releases in GitHub!" << std::endl;
         return 1;
@@ -73,7 +77,6 @@ int main(int argc, char *argv[]) {
             //check if spider is present in resources/spiderkit... present mini menu in ZPET?
             break;
         case 3:
-            if (0==0){
                 //Create 'SENSITIVE' Directory For Device Data Processing/Handling
                 //Notes - set permissions appropriately... currently set to world rw... root only!
                 if (mkdir("SENSITIVE", 0777)) {
@@ -82,14 +85,64 @@ int main(int argc, char *argv[]) {
                         std::cout << "Does The SENSITIVE Directory Already Exist? Back It Up & Delete It!..." << std::endl;
                         return 1;
                     } else{
-                        //continue
-                        
-                        init_device("ssh");
-                        
-                        
-                    }
+                        std::cout << "\n[*] Initialising Device\n" << std::endl;
+                        //Initialise 'device' object...
+                        Device device = init_device("ssh");
+                        //Dump information for debugging purposes
+                        if(device.can_connnect){
+                            device.info();
+                            std::cout << "\n[*] Preparing To Extract Data..." << std::endl;
+                            sleep(5);
+                            /*
+                             Counts modules listed in moduleloader txt to initialise
+                             a counter (how many modules to import)
+                             */
+                            std::cout << "\n[+] Importing Modules... ";
+                            sleep(1);
+                            Module mods[countLinesInTxt("modules/moduleloader")];
+                            //Populate mods array with modules while counting imported mods
+                            int linenum = 0;
+                            std::string line;
+                            //Open streams for the moduleloader (for read) - loadertxt used elsewhere!
+                            std::ifstream loadertxt("modules/moduleloader");
+                            std::ifstream popmodtxts("modules/moduleloader");
+                            if (popmodtxts.is_open()) {
+                                while (getline(popmodtxts, line)) {
+                                    std::string addedsubdir = "modules/" + line; //adds folder reference + line contents (filename of module)... example would be 'modules/wifi'
+                                    mods[linenum] = loadModule(addedsubdir);
+                                    linenum++;
+                                }
+                                popmodtxts.close();
+                                loadedmodcount = linenum;
+                                std::cout << " Imported " << loadedmodcount << " modules!" << std::endl;
+                            }
+                            //process loaded mods
+                            int err_count = 0; //if error limit is hit, stop execution.
+                            int err_limit = 3;
+                            for(int i=0;i<(loadedmodcount);i++){
+                                if(err_count>=err_limit){
+                                    std::cout << "[!] Error Limit Hit...Exiting For Safety - (check moduleloader!)" << std::endl;
+                                    return 1;
+                                }
+                                if(mods[i].validate()==0){
+                                    //            mods[i].info();
+                                    std::cout << "\n[*] Module -> " << mods[i].displayname << "\n[*] Author -> " << mods[i].author << std::endl;
+                                    sleep(1);
+                                    std::cout << "[*] Module Output -> ...\n----------\n";
+                                    if(scanHandler(mods[i],device.ip_addr,device.port,device.ssh_pw)!=0){
+                                        err_count++;
+                                        std::cout << "[!] Module " << i << " (" << mods[i].displayname << ") Sent For Processing But Did NOT Complete! Is it up to date? " << std::endl;
+                                    }
+                                    std::cout << "----------" << std::endl;
+                                } else{
+                                    std::cout << "=========\n[!] Module" << i << " did not pass the initial validator!\n=========\n";
+                                }
+                            }
+                        } else{
+                            std::cout << "\n[!] Device Did Not Connect Successfully...";
+                            exit(1);
+                        }
                 }
-                
                 return 1;
             }
             break;
@@ -105,87 +158,6 @@ int main(int argc, char *argv[]) {
     
     //BASIC INIT ENDS HERE
     
-    //TODO - Fix return character not being detected/escaping from input.
-//    std::cout << "\n[?] Device SSH Port? (44): ";
-//    std::cin >> deviceport;
-//    if(deviceport.length()==0) deviceport = "44"; //not functional... cin doesn't detect return character as input..?
-//    std::cout << "[?] Device Root Password? (alpine): ";
-//    std::cin >> devicepw;
-//    if(devicepw.length()==0) devicepw = "alpine"; //not functional... cin doesn't detect return character as input..?
-//
-//
-    /*
-     Counts modules listed in moduleloader txt to initialise
-     a counter (how many modules to import)
-     */
-    std::cout << "\n[+] Importing Modules... ";
-    sleep(1);
-    Module mods[countLinesInTxt("modules/moduleloader")];
-    //Populate mods array with modules while counting imported mods
-    int linenum = 0;
-    std::string line;
-    //Open streams for the moduleloader (for read) - loadertxt used elsewhere!
-    std::ifstream loadertxt("modules/moduleloader");
-    std::ifstream popmodtxts("modules/moduleloader");
-    if (popmodtxts.is_open()) {
-        while (getline(popmodtxts, line)) {
-            std::string addedsubdir = "modules/" + line; //adds folder reference + line contents (filename of module)... example would be 'modules/wifi'
-            mods[linenum] = loadModule(addedsubdir);
-            linenum++;
-        }
-        popmodtxts.close();
-        loadedmodcount = linenum;
-        std::cout << " Imported " << loadedmodcount << " modules!" << std::endl;
-    }
-    
-    //artifical sleep to allow user to observe output.
-    //execution moves quickly!
-    sleep(3);
-    
-    //Initialise SSH
-//    std::cout << "[+] Initialising SSH... ";
-//    std::string ssh_init = "sudo iproxy 7788 " + deviceport + " 2>/dev/null >/dev/null &";
-//    const char *exec = ssh_init.c_str();
-//    int ret = system(exec);
-//    if (WEXITSTATUS(ret) != 0){
-//        std::cout << "\n[!] iProxy Could Not Be Initialised Correctly...\nIs libimobiledevice Installed? (try 'brew install libimobiledevice')";
-//        return 1;
-//    }
-    sleep(2);
-    std::cout << "SSH Tunnel Initialised!" << std::endl;
-    sleep(1);
-    //Check device is connected
-    
-    //Print Basic Device Information
-    std::cout << "\n-----\n[+] Basic Device Information:" << std::endl;
-    if(macOS_GetExit("echo 'Device Name:' && ideviceinfo | grep DeviceName | cut -f2 -d':' | sed 's/^[ \t]*//'")) return 1;
-    if(macOS_GetExit("echo 'Device Serial Number:' &&ideviceinfo | grep SerialNumber: | grep -v Base | grep -v Chip | grep -v MLB | grep -v Wireless |  cut -f2 -d':' | sed 's/^[ \t]*//'")) return 1;
-    
-    std::cout << "-----\n\n[*] If the above information does NOT pertain to the device you wish to extract data from - you now have 10 seconds to hit CTRL+C to end execution..." << std::endl;
-    sleep(10);
-    
-    //process loaded mods
-    int err_count = 0; //if error limit is hit, stop execution.
-    int err_limit = 3;
-    for(int i=0;i<(loadedmodcount);i++){
-        if(err_count>=err_limit){
-            std::cout << "[!] Error Limit Hit...Exiting For Safety - (check moduleloader!)" << std::endl;
-            return 1;
-        }
-        if(mods[i].validate()==0){
-            //            mods[i].info();
-            std::cout << "\n[*] Module -> " << mods[i].displayname << "\n[*] Author -> " << mods[i].author << std::endl;
-            sleep(1);
-            std::cout << "[*] Module Output -> ...\n----------\n";
-//            if(scanHandler(mods[i],deviceip,deviceport,devicepw)!=0){
-//                err_count++;
-//                std::cout << "[!] Module " << i << " (" << mods[i].displayname << ") Sent For Processing But Did NOT Complete! Is it up to date? " << std::endl;
-//            }
-            std::cout << "----------" << std::endl;
-        } else{
-            std::cout << "=========\n[!] Module" << i << " did not pass the initial validator!\n=========\n";
-        }
-    }
     
     //Generic iproxy kill on exit - check *nix compatibility
 //    system("pkill iproxy");
