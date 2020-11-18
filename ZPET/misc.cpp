@@ -18,48 +18,19 @@
 #include <unistd.h>
 
 /*
- verifyPrereqs ensures that correct prereqs for the individual OS are available.
- Definitions for where each prerequesite should be located (for each OS) can be found in misc.h!
+ check_binary_in_path
+ Last Author: James Duffy
+ Last Modified: 18-11-2020
+ Purpose: Check binary exists in path... (prerequesite checker)
+ Notes:
+        * Potentially add option for absolute referencing of a binary?
  */
-int verifyPrereqs(int functionType){
-    if(functionType==3){
-        switch (OS) {
-                case 1:
-                if(macOS_GetExit("which iproxy >/dev/null")==0){
-                    std::cout << "[+] Loaded iProxy" << std::endl;
-                    usleep(200 * 1000);
-                    if(macOS_GetExit("which scp >/dev/null")==0){
-                        std::cout << "[+] Loaded SCP" << std::endl;
-                        usleep(200 * 1000);
-                        if(macOS_GetExit("which plutil >/dev/null")==0){
-                            std::cout << "[+] Loaded plutil" << std::endl;
-                            if(macOS_GetExit("which truncate >/dev/null ")==0){
-                                std::cout << "[+] Loaded truncate" << std::endl;
-                                usleep(200 * 1000);
-                                return 0;
-                            } else return 1;
-                        } else return 1;
-                    } else return 1;
-                } else return 1;
-                break;
-                case 2:
-                if(macOS_GetExit("which iproxy")==0){
-                    std::cout << "[+] Loaded iProxy" << std::endl;
-                    if(macOS_GetExit("which scp")==0){
-                        std::cout << "[+] Loaded SCP" << std::endl;
-                        if(macOS_GetExit("plutil")==0){
-                            std::cout << "[+] Loaded plutil" << std::endl;
-                            usleep(200 * 1000);
-                            return 0;
-                        } else return 1;
-                    } else return 1;
-                } else return 1;
-                break;
-            default:
-                return 2;
-        }
-    }
-    return 1;
+int check_binary_in_path(std::string bin){
+    std::string exec_com = "which " + bin + " >/dev/null";
+    if(macOS_GetExit(exec_com.c_str())==0){
+        usleep(200 * 1000);
+        return 0;
+    } else return 1;
 }
 
 
@@ -128,6 +99,19 @@ int macOS_GetExit(std::string command){
     return 0;
     else
     return 1;
+}
+
+char *macos_run_get_fline(char *command){
+        char com2[1024];
+        strcpy(com2, command);
+        char commout[1024];
+        sprintf(commout, "%s", com2);
+        char *com = commout;
+        char out[4096];
+        FILE *shell = popen(com, "r");
+        fgets(out, sizeof(out), shell);
+        pclose(shell);
+        return out;
 }
 
 
