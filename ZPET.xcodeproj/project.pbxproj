@@ -76,19 +76,27 @@
 		332BCA21254038570079C142 /* ZPET */ = {
 			isa = PBXGroup;
 			children = (
+				3385DDCD256497D000595F94 /* moduleproc */,
 				332BCA3425403E040079C142 /* modules */,
 				332BCA3325403E040079C142 /* resources */,
 				332BCA22254038570079C142 /* main.cpp */,
 				332BCA2A254039FE0079C142 /* misc.h */,
 				332BCA2B25403A540079C142 /* misc.cpp */,
-				332BCA2D25403A760079C142 /* module.cpp */,
-				332BCA2E25403A760079C142 /* module.hpp */,
-				332BCA3025403B1C0079C142 /* processor.cpp */,
-				332BCA3125403B1C0079C142 /* processor.hpp */,
 				3385DDC92564970900595F94 /* device.cpp */,
 				3385DDCA2564970900595F94 /* device.hpp */,
 			);
 			path = ZPET;
+			sourceTree = "<group>";
+		};
+		3385DDCD256497D000595F94 /* moduleproc */ = {
+			isa = PBXGroup;
+			children = (
+				332BCA2E25403A760079C142 /* module.hpp */,
+				332BCA3025403B1C0079C142 /* processor.cpp */,
+				332BCA3125403B1C0079C142 /* processor.hpp */,
+				332BCA2D25403A760079C142 /* module.cpp */,
+			);
+			path = moduleproc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
