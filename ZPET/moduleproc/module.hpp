@@ -13,6 +13,7 @@
 #include <fstream>
 #include <string>
 #include <stdio.h>
+#include "device.hpp"
 
 bool is_file_exist(const char *fileName);
 
@@ -31,5 +32,7 @@ public:
 };
 
 Module loadModule(std::string modsrctxt);
+
+void process_modules(Device device);
 
 #endif /* module_hpp */

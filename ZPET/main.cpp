@@ -29,11 +29,15 @@ int main(int argc, char *argv[]) {
     "\033[1;34m  / /__| |    | |____   | |    \n"
     "\033[1;31m /_____|_|    |______|  |_|\033[0m v2-internal" << std::endl;
     
+    system("pwd");
+    
     //Check if running as root... (folder permissions restricted for user safety)
     if(getuid()!=0){
         std::cout << "ZPETv2 Must Be Run As Root! (sudo ./ZPET)" << std::endl;
         return 1;
     }
+    
+    
     
     /*
      ModuleLoader - Basic Prerequesite Check
@@ -93,51 +97,7 @@ int main(int argc, char *argv[]) {
                             device.info();
                             std::cout << "\n[*] Preparing To Extract Data..." << std::endl;
                             sleep(5);
-                            /*
-                             Counts modules listed in moduleloader txt to initialise
-                             a counter (how many modules to import)
-                             */
-                            std::cout << "\n[+] Importing Modules... ";
-                            sleep(1);
-                            Module mods[countLinesInTxt("modules/moduleloader")];
-                            //Populate mods array with modules while counting imported mods
-                            int linenum = 0;
-                            std::string line;
-                            //Open streams for the moduleloader (for read) - loadertxt used elsewhere!
-                            std::ifstream loadertxt("modules/moduleloader");
-                            std::ifstream popmodtxts("modules/moduleloader");
-                            if (popmodtxts.is_open()) {
-                                while (getline(popmodtxts, line)) {
-                                    std::string addedsubdir = "modules/" + line; //adds folder reference + line contents (filename of module)... example would be 'modules/wifi'
-                                    mods[linenum] = loadModule(addedsubdir);
-                                    linenum++;
-                                }
-                                popmodtxts.close();
-                                loadedmodcount = linenum;
-                                std::cout << " Imported " << loadedmodcount << " modules!" << std::endl;
-                            }
-                            //process loaded mods
-                            int err_count = 0; //if error limit is hit, stop execution.
-                            int err_limit = 3;
-                            for(int i=0;i<(loadedmodcount);i++){
-                                if(err_count>=err_limit){
-                                    std::cout << "[!] Error Limit Hit...Exiting For Safety - (check moduleloader!)" << std::endl;
-                                    return 1;
-                                }
-                                if(mods[i].validate()==0){
-                                    //            mods[i].info();
-                                    std::cout << "\n[*] Module -> " << mods[i].displayname << "\n[*] Author -> " << mods[i].author << std::endl;
-                                    sleep(1);
-                                    std::cout << "[*] Module Output -> ...\n----------\n";
-                                    if(scanHandler(mods[i],device.ip_addr,device.port,device.ssh_pw)!=0){
-                                        err_count++;
-                                        std::cout << "[!] Module " << i << " (" << mods[i].displayname << ") Sent For Processing But Did NOT Complete! Is it up to date? " << std::endl;
-                                    }
-                                    std::cout << "----------" << std::endl;
-                                } else{
-                                    std::cout << "=========\n[!] Module" << i << " did not pass the initial validator!\n=========\n";
-                                }
-                            }
+                            process_modules(device);
                         } else{
                             std::cout << "\n[!] Device Did Not Connect Successfully...";
                             exit(1);

@@ -8,6 +8,7 @@
 
 #include "module.hpp"
 #include "misc.h"
+#include "device.hpp"
 
 //
 // Created by 010011 on 06/10/2020.
@@ -103,4 +104,52 @@ Module loadModule(std::string modsrctxt){
 };
 
 
-
+void process_modules(Device device){
+    int loadedmodcount=0;
+    /*
+     Counts modules listed in moduleloader txt to initialise
+     a counter (how many modules to import)
+     */
+    std::cout << "\n[+] Importing Modules... ";
+    sleep(1);
+    Module mods[countLinesInTxt("modules/moduleloader")];
+    //Populate mods array with modules while counting imported mods
+    int linenum = 0;
+    std::string line;
+    //Open streams for the moduleloader (for read) - loadertxt used elsewhere!
+    std::ifstream loadertxt("modules/moduleloader");
+    std::ifstream popmodtxts("modules/moduleloader");
+    if (popmodtxts.is_open()) {
+        while (getline(popmodtxts, line)) {
+            std::string addedsubdir = "modules/" + line; //adds folder reference + line contents (filename of module)... example would be 'modules/wifi'
+            mods[linenum] = loadModule(addedsubdir);
+            linenum++;
+        }
+        popmodtxts.close();
+        loadedmodcount = linenum;
+        std::cout << " Imported " << loadedmodcount << " modules!" << std::endl;
+    }
+    
+    
+    int err_count = 0; //if error limit is hit, stop execution.
+    int err_limit = 3;
+    for(int i=0;i<(loadedmodcount);i++){
+        if(err_count>=err_limit){
+            std::cout << "[!] Error Limit Hit...Exiting For Safety - (check moduleloader!)" << std::endl;
+            exit(1);
+        }
+        if(mods[i].validate()==0){
+            //            mods[i].info();
+            std::cout << "\n[*] Module -> " << mods[i].displayname << "\n[*] Author -> " << mods[i].author << std::endl;
+            sleep(1);
+            std::cout << "[*] Module Output -> ...\n----------\n";
+            if(scanHandler(mods[i],device.ip_addr,device.port,device.ssh_pw)!=0){
+                err_count++;
+                std::cout << "[!] Module " << i << " (" << mods[i].displayname << ") Sent For Processing But Did NOT Complete! Is it up to date? " << std::endl;
+            }
+            std::cout << "----------" << std::endl;
+        } else{
+            std::cout << "=========\n[!] Module" << i << " did not pass the initial validator!\n=========\n";
+        }
+    }
+}
