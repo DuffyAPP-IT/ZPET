@@ -13,6 +13,9 @@
 
 int main(int argc, char *argv[]) {
     std::string moduleDir = "modules/moduleloader";
+    
+    system("pwd");
+    
     std::cout << "\033[1;34m  ___________  ______ _______  \n"
     "\033[1;35m |___  /  __ \\|  ____|__   __|\n"
     "\033[1;31m    / /| |__) | |__     | |    \n"
