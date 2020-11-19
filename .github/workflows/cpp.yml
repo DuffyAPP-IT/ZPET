@@ -14,4 +14,4 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: configure
-      run: cd g++ ZPET/main.cpp ZPET/misc.cpp ZPET/misc.h ZPET/device.cpp ZPET/device.hpp ZPET/moduleproc/module.cpp ZPET/moduleproc/processor.cpp ZPET/moduleproc/processor.hpp ZPET/moduleproc/module.hpp -o ZPET
+      run: g++ ZPET/main.cpp ZPET/misc.cpp ZPET/misc.h ZPET/device.cpp ZPET/device.hpp ZPET/moduleproc/module.cpp ZPET/moduleproc/processor.cpp ZPET/moduleproc/processor.hpp ZPET/moduleproc/module.hpp -o ZPET
