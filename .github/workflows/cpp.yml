@@ -15,5 +15,5 @@ jobs:
     - uses: actions/checkout@v1
     - name: configure
       run: 
-          ls
-          g++ ZPET/main.cpp ZPET/misc.cpp ZPET/misc.h ZPET/device.cpp ZPET/device.hpp ZPET/moduleproc/module.cpp ZPET/moduleproc/processor.cpp ZPET/moduleproc/processor.hpp ZPET/moduleproc/module.hpp -o ZPET
+          ls && 
+          g++ main.cpp misc.cpp misc.h device.cpp device.hpp moduleproc/module.cpp moduleproc/processor.cpp moduleproc/processor.hpp moduleproc/module.hpp -o ZPET
