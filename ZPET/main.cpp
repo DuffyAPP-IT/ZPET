@@ -12,32 +12,19 @@
 
 
 int main(int argc, char *argv[]) {
-    
-    //Basic Costant Strings - Could Setup User Input
     std::string moduleDir = "modules/moduleloader";
-//    std::string deviceip = "127.0.0.1";
-//    std::string deviceport;
-//    std::string devicepw;
-    
-    int loadedmodcount = 0; //track loaded module count
-    
-    
     std::cout << "\033[1;34m  ___________  ______ _______  \n"
     "\033[1;35m |___  /  __ \\|  ____|__   __|\n"
     "\033[1;31m    / /| |__) | |__     | |    \n"
     "\033[1;36m   / / |  ___/|  __|    | |    \n"
     "\033[1;34m  / /__| |    | |____   | |    \n"
     "\033[1;31m /_____|_|    |______|  |_|\033[0m v2-internal" << std::endl;
-    
-    system("pwd");
-    
+
     //Check if running as root... (folder permissions restricted for user safety)
     if(getuid()!=0){
         std::cout << "ZPETv2 Must Be Run As Root! (sudo ./ZPET)" << std::endl;
         return 1;
     }
-    
-    
     
     /*
      ModuleLoader - Basic Prerequesite Check
@@ -120,6 +107,6 @@ int main(int argc, char *argv[]) {
     
     
     //Generic iproxy kill on exit - check *nix compatibility
-//    system("pkill iproxy");
+    system("pkill iproxy");
     return 0;
 }
