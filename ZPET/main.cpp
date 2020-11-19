@@ -14,7 +14,7 @@
 int main(int argc, char *argv[]) {
     std::string moduleDir = "modules/moduleloader";
     
-    system("pwd");
+    system("pwd"); //pull xcode build directory
     
     std::cout << "\033[1;34m  ___________  ______ _______  \n"
     "\033[1;35m |___  /  __ \\|  ____|__   __|\n"
