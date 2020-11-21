@@ -13,8 +13,9 @@
 #include "module.hpp"
 #include "misc.h"
 #include "processor.hpp"
-
-
+#include <ctime>
+#include "Base64.h"
+#include <sys/utsname.h>
 #include <unistd.h>
 
 /*
@@ -111,8 +112,62 @@ char *macos_run_get_fline(char *command){
         FILE *shell = popen(com, "r");
         fgets(out, sizeof(out), shell);
         pclose(shell);
-        return out;
+        return strtok(out,"\n");
+}
+
+std::string load_consent_data(){
+    std::string data; //hold txt data per line during read
+    std::string dataout;
+    std::ifstream loadedtxt(".analytics"); //initialise stream to input txt file
+    int current_linenum = 0; //init line number track
+    if (loadedtxt.is_open())
+    {
+        while (getline(loadedtxt,data) )
+        {
+            dataout = dataout+data;
+            current_linenum++;
+        }
+        loadedtxt.close(); //close file reading
+    }
+    return dataout;
+};
+
+int write_consent_data(std::string yn){
+    std::ofstream log(".analytics");
+    if(!log) return 1;
+    log.write(yn.c_str(),yn.size());
+    log.close();
+    return 0;
+}
+
+std::string removeSpaces(std::string str){
+    str.erase(remove(str.begin(), str.end(), ' '), str.end());
+    str.erase(remove(str.begin(), str.end(), ':'), str.end());
+    str.erase(remove(str.begin(), str.end(), '\n'), str.end());
+    return str;
 }
 
 
+
+void submit_event(std::string event){
+//    std::string model = macos_run_get_fline("system_profiler SPHardwareDataType | awk '/Identifier/ {print $3}'");
+//    std::string os_ver = macos_run_get_fline("system_profiler SPSoftwareDataType | awk '/System Version/ {print $4}'");
+    
+    struct utsname systemstats;
+    uname(&systemstats);
+    std::string sysname = systemstats.sysname;
+    std::string machinedt = systemstats.machine;
+    std::time_t result = std::time(nullptr);
+    std::string datetime = std::asctime(std::localtime(&result));
+    std::string machine = removeSpaces(sysname+machinedt+datetime);
+    std::string auth = Encode(machine);
+//    std::cout << machine << std::endl;
+    if(XC==1) std::cout << auth << std::endl;
+    
+    std::string device = macos_run_get_fline("sysctl hw.model | cut -f2 -d':' | cut -f2 -d' '");
+    
+    std::string launchRequest = "curl -s --location --request POST 'http://alpha.external.duffy.app:8080/api/analytics' --header 'Content-Type: application/json' --data-raw '{\"analytics\": {\"device\": \"" + device + "\",\"event\": \"" + event + "\",\"auth\": \"" + auth + "\"}}' >/dev/null";
+    
+    system(launchRequest.c_str());
+}
 

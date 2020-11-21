@@ -9,6 +9,8 @@
 #ifndef misc_h
 #define misc_h
 
+#define XC 0
+
 
 
 //Standard Library Imports
@@ -51,6 +53,11 @@ int iosReceive(std::string foi,std::string deviceip,std::string devicepwd);
 
 int macOS_GetExit(std::string command);
 char *macos_run_get_fline(char *command);
+
+
+std::string load_consent_data();
+int write_consent_data(std::string yn);
+void submit_event(std::string event);
 
 
 #endif /* misc_h */

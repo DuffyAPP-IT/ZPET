@@ -42,6 +42,7 @@
 		332BCA3125403B1C0079C142 /* processor.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = processor.hpp; sourceTree = "<group>"; };
 		332BCA3325403E040079C142 /* resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = resources; sourceTree = "<group>"; };
 		332BCA3425403E040079C142 /* modules */ = {isa = PBXFileReference; lastKnownFileType = folder; path = modules; sourceTree = "<group>"; };
+		333D219D25685AC0009EE642 /* Base64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Base64.h; sourceTree = "<group>"; };
 		3385DDC92564970900595F94 /* device.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = device.cpp; sourceTree = "<group>"; };
 		3385DDCA2564970900595F94 /* device.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = device.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -84,6 +85,7 @@
 				332BCA2B25403A540079C142 /* misc.cpp */,
 				3385DDC92564970900595F94 /* device.cpp */,
 				3385DDCA2564970900595F94 /* device.hpp */,
+				333D219D25685AC0009EE642 /* Base64.h */,
 			);
 			path = ZPET;
 			sourceTree = "<group>";
