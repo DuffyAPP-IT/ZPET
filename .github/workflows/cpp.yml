@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: ZPETv2 macOS
 
 on:
   push:
@@ -16,5 +16,4 @@ jobs:
     - name: configure
       run: 
           ls && cd ZPET && ls && 
-          g++ main.cpp misc.cpp misc.h device.cpp device.hpp moduleproc/module.cpp moduleproc/processor.cpp moduleproc/processor.hpp moduleproc/module.hpp -o ZPET
-
+          g++ main.cpp misc.cpp misc.h module.cpp processor.cpp processor.hpp module.hpp -o ZPET
