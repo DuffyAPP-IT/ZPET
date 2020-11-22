@@ -54,8 +54,8 @@ int main(int argc, char *argv[]) {
     } else{ //first launch consent
         std::cout << "---------\nWelcome To ZPET\n---------" << std::endl;
         std::cout << "ZPET is actively developed by a single developer, myself, @J_Duffy01 !" << std::endl;
-        std::cout << "I have implemented very basic, *non-attributable*, optional analytics - i've made this transsparent, showing example requests for each event:\n" << std::endl;
-        std::cout << "Analytics Overview:\n[*] ZPETv2 Launch 'Ping'!\t'{device:'MacBookPro13,3',event:'userStart'}'" << std::endl;
+        std::cout << "I have implemented very basic, *non-attributable*, optional analytics - i've made this transparent, showing example requests for each event:\n" << std::endl;
+        std::cout << "Would you like to submit the following analytics?\n[*] ZPETv2 Launch 'Ping'!\t'{device:'MacBookPro13,3',event:'userStart'}'" << std::endl;
         std::cout << "[*] ZPETv2 Internal Error\t'{device:'MacBookPro13,3',event:'userProcess:iOSRecieveErr'}'" << std::endl;
         std::cout << "[*] ZPETv2 Feature Entry\t'{device:'MacBookPro13,3',event:'userFeatureHit:SPIDER'}'" << std::endl;
         std::cout << "\ny/n [?] ";

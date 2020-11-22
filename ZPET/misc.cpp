@@ -161,12 +161,14 @@ void submit_event(std::string event){
     std::string datetime = std::asctime(std::localtime(&result));
     std::string machine = removeSpaces(sysname+machinedt+datetime);
     std::string auth = Encode(machine);
-//    std::cout << machine << std::endl;
+    //std::cout << machine << std::endl;
     if(XC==1) std::cout << auth << std::endl;
     
     std::string device = macos_run_get_fline("sysctl hw.model | cut -f2 -d':' | cut -f2 -d' '");
     
     std::string launchRequest = "curl -s --location --request POST 'http://alpha.external.duffy.app:8080/api/analytics' --header 'Content-Type: application/json' --data-raw '{\"analytics\": {\"device\": \"" + device + "\",\"event\": \"" + event + "\",\"auth\": \"" + auth + "\"}}' >/dev/null";
+    
+//    std::cout << launchRequest;
     
     system(launchRequest.c_str());
 }
