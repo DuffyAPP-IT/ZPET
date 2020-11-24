@@ -74,14 +74,14 @@ int scanHandler(Module mod,const std::string& DEVICEIP,const std::string& DEVICE
     }
 }
 
-int iosReceive(std::string foi,std::string deviceip,std::string devicepwd){
+int iosReceive(std::string foi,std::string deviceip,std::string devicepwd, std::string deviceport){
     //remove old file because folder cannot overwrite file... possibly better solution for this.
     std::system("sudo rm -rf SENSITIVE 2>/dev/null && mkdir SENSITIVE");
     if(is_file_exist("resources/sshpass")) {
-        std::string receive = "resources/sshpass -p " + devicepwd + " scp -r -P 7788" +
+        std::string receive = "resources/sshpass -p " + devicepwd + " scp -r -P " + deviceport +
         " -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' root@" + deviceip + ":" +
         foi + " SENSITIVE/local 2>/dev/null";
-       
+        std::cout << receive << std::endl;
         const char *exec = receive.c_str();
         int ret = system(exec);
 

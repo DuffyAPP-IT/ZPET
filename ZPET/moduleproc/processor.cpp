@@ -13,7 +13,7 @@
 int plistproc(std::string foi, std::string key, std::string piperesult, std::string IP, std::string PORT, std::string DEVICEPW){
     
     if(PLIST_COMPAT!=1) return 2; //1 meaning compatible in this case
-    if(iosReceive(foi,IP,DEVICEPW)==0){
+    if(iosReceive(foi,IP,DEVICEPW,PORT)==0){
         //implement C++ Strings here
         char proc[800];
         if(key.length()==0){
@@ -37,7 +37,7 @@ int plistproc(std::string foi, std::string key, std::string piperesult, std::str
 int sqliteproc(std::string foi, std::string query, std::string piperesult, std::string IP, std::string PORT, std::string DEVICEPW){
     //    printf("sqliteproc hit\n");
     if(SQLITE_COMPAT!=1) return 2; //1 meaning compatible in this case
-    if(iosReceive(foi,std::move(IP),DEVICEPW)==0){
+    if(iosReceive(foi,std::move(IP),DEVICEPW,PORT)==0){
         char proc[800];
         std::sprintf(proc,"sqlite3 SENSITIVE/local -line '%s' | cut -f2 -d'=' | awk NF",query.c_str());
         if(piperesult.length()>2){
@@ -61,7 +61,7 @@ int jsonproc(std::string foi, std::string sval, std::string IP, std::string PORT
 int execproc(std::string foi, std::string exec, std::string piperesult, std::string IP, std::string PORT, std::string DEVICEPW, std::string execend){
     if(JSON_COMPAT!=1) return 2; //1 meaning compatible in this case
     //    printf("execproc hit\n");
-    iosReceive(foi,std::move(IP),DEVICEPW);
+    iosReceive(foi,std::move(IP),DEVICEPW,PORT);
     char proc[800];
     std::sprintf(proc,"%s",exec.c_str());
     if(piperesult.length()>2){

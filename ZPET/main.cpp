@@ -81,10 +81,9 @@ int main(int argc, char *argv[]) {
     /*
      ZPETv2 - Main Menu
      Last Author: James Duffy
-     Last Modified: 17-11-2020
+     Last Modified: 24-11-2020
      Purpose: Capture user input & direct execution flow based on user choice...
      Notes:
-            * Ensure that only required dependencies are loaded based on user choice!
             * Menu item array size based on amount of items (dynamic array? not sure if you can do this easily in c++?)
      */
     
@@ -140,6 +139,7 @@ int main(int argc, char *argv[]) {
                             std::cout << "\n[*] Preparing To Extract Data..." << std::endl;
                             sleep(5);
                             process_modules(device);
+                            if(device.connection_type == "ssh" && device.port != "3022") system("pkill iproxy");
                         } else{
                             if (analytics==1) submit_event("userProcess:deviceCanConnectERR");
                             std::cout << "\n[!] Device Did Not Connect Successfully...";
@@ -152,7 +152,42 @@ int main(int argc, char *argv[]) {
         
         case 4:
             if(analytics==1) submit_event("userFeatureHit:FSAcquire");
+            //Create 'SENSITIVE' Directory For Device Data Processing/Handling
+            //Notes - set permissions appropriately... currently set to world rw... root only!
+            if (mkdir("SENSITIVE", 0777)) {
+                std::system("sudo rm -rf SENSITIVE 2>/dev/null");
+                if (mkdir("SENSITIVE", 0777)) {
+                    if (analytics==1) submit_event("userProcess:sensitiveDirCreateErr");
+                    std::cout << "Does The SENSITIVE Directory Already Exist? Back It Up & Delete It!..." << std::endl;
+                    return 1;
+                } else{
+                    std::cout << "\n[*] Initialising Device\n" << std::endl;
+                    //Initialise 'device' object...
+                    Device device = init_device("ssh");
+                    device.info();
+                    //Dump information for debugging purposes
+                    if(device.can_connnect){
+                        std::cout << "\n[*] Preparing To Extract Data..." << std::endl;
+                        sleep(5);
+                        char cwd[PATH_MAX];
+                        if (getcwd(cwd, sizeof(cwd)) != NULL) {
+                            printf("[+] Dumping rootfs in current working directory\n");
+                            char commandBuffer[PATH_MAX];
+                            snprintf(commandBuffer, sizeof(commandBuffer), "resources/sshpass -p alpine ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@%s -p%s 'tar zcf - / 2>/dev/null' | resources/pv > SENSITIVE/filesystem.tar",device.ip_addr.c_str(),device.port.c_str());
+                            system(commandBuffer);
+                            if(device.connection_type == "ssh" && device.port != "3022") system("pkill iproxy");
+                        } else {
+                            printf("[-] Error getting current working directory\n");
+                            exit(1);
+                       }
+                    } else{
+                        if (analytics==1) submit_event("userProcess:deviceCanConnectERR");
+                        std::cout << "\n[!] Device Did Not Connect Successfully...";
+                        exit(1);
+                    }
+                }
             return 1;
+            break;
             
         case 5:
             if(analytics==1) submit_event("userFeatureHit:SpiderLOCAL");
@@ -168,8 +203,6 @@ int main(int argc, char *argv[]) {
             std::cout << "[!] Invalid Option!" << std::endl;
             break;
     }
-        
-    //Generic iproxy kill on exit - check *nix compatibility
-    system("pkill iproxy");
     return 0;
+}
 }

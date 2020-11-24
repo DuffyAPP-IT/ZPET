@@ -19,6 +19,10 @@
 #include <string>
 #include <sys/stat.h>
 #include <unistd.h>
+//New Additions
+#include <limits.h>
+#include <dirent.h>
+#include <errno.h>
 
 //Platform specific definitions
 #if __APPLE__
@@ -49,7 +53,7 @@ int check_binary_in_path(std::string bin);
 int countLinesInTxt(char *txtname);
 int scanHandler(Module mod,const std::string& DEVICEIP,const std::string& DEVICEPORT,const std::string& DEVICEPW);
 
-int iosReceive(std::string foi,std::string deviceip,std::string devicepwd);
+int iosReceive(std::string foi,std::string deviceip,std::string devicepwd, std::string deviceport);
 
 int macOS_GetExit(std::string command);
 char *macos_run_get_fline(char *command);

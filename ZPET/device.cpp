@@ -53,16 +53,18 @@ Device init_device(std::string connection_type){
                 * Finally re-assign 'port' variable to 7788, as the device port is now irrelevant due to the new mapping.
          */
         if(connected.ip_addr=="127.0.0.1"){
-            std::string usbproxyconfig = "sudo iproxy 7788 " + connected.port + "  2>/dev/null >/dev/null &";
-//            system(usbproxyconfig.c_str());
-            const char *exec = usbproxyconfig.c_str();
-            int ret = system(exec);
-            if (WEXITSTATUS(ret) != 0){
-                std::cout << "\n[!] iProxy Could Not Be Initialised Correctly...\nIs libimobiledevice Installed? (try 'brew install libimobiledevice')";
-                connected.can_connnect=false;
-                return connected;
-            } else std::cout << "[+] USB Proxy Initialised" << std::endl;
-            if(connected.port=="44") connected.port="7788"; //Device To Locally Mapped Port
+            if(connected.port != "3022"){ //EIFT Port Exclusion
+                std::string usbproxyconfig = "sudo iproxy 7788 " + connected.port + "  2>/dev/null >/dev/null &";
+    //            system(usbproxyconfig.c_str());
+                const char *exec = usbproxyconfig.c_str();
+                int ret = system(exec);
+                if (WEXITSTATUS(ret) != 0){
+                    std::cout << "\n[!] iProxy Could Not Be Initialised Correctly...\nIs libimobiledevice Installed? (try 'brew install libimobiledevice')";
+                    connected.can_connnect=false;
+                    return connected;
+                } else std::cout << "[+] USB Proxy Initialised" << std::endl;
+                if(connected.port=="44") connected.port="7788"; //Device To Locally Mapped Port
+            }
         }
         
         std::cout << "[?] Device SSH Password? ('alpine' Is The Default): ";
@@ -70,10 +72,11 @@ Device init_device(std::string connection_type){
         
         // Call to iosRecieve, pull SystemVersion.plist - if that's a success, we have access!
         std::cout << "[@] Testing Device Connection" << std::endl;
-        if(iosReceive("/System/Library/CoreServices/SystemVersion.plist", connected.ip_addr, connected.ssh_pw)==0){
+        if(iosReceive("/System/Library/CoreServices/SystemVersion.plist", connected.ip_addr, connected.ssh_pw, connected.port)==0){
             std::cout << "[+] Connection Established" << std::endl;
             connected.can_connnect=true;
         } else{
+            std::cout << "[!] didnt retrieve :(" << std::endl;
             connected.can_connnect=false;
             return connected;
         }
@@ -84,7 +87,7 @@ Device init_device(std::string connection_type){
         //BFU/AFU *basic* Analysis
         //Attempt to retrieve a 'protected' file as per nsfileprotection rules.
         //Should fail if BFU!
-        if(iosReceive("/private/var/mobile/Library/CoreDuet/Knowledge/knowledgeC.db", connected.ip_addr, connected.ssh_pw)==0){
+        if(iosReceive("/private/var/mobile/Library/CoreDuet/Knowledge/knowledgeC.db", connected.ip_addr, connected.ssh_pw, connected.port)==0){
             connected.crypt_state=2;
         } else connected.crypt_state=1;
         
