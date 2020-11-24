@@ -30,7 +30,6 @@ int plistproc(std::string foi, std::string key, std::string piperesult, std::str
         return 0;
     } else{
         std::cout << "[!] Module Could Not Execute - iosRecieve Failed...\nIs The Target Device Connected & Checkra1n'ed?" << std::endl;
-        //        std::cout << "proc returning 1\n";
         return 1;
     }
 }

@@ -155,34 +155,33 @@ std::string endProc(std::string str){
 void submit_event(std::string event){
 //    std::string model = macos_run_get_fline("system_profiler SPHardwareDataType | awk '/Identifier/ {print $3}'");
 //    std::string os_ver = macos_run_get_fline("system_profiler SPSoftwareDataType | awk '/System Version/ {print $4}'");
-    std::cout << "Fetching sysinfo struct...!" << std::endl;
+//    std::cout << "Fetching sysinfo struct...!" << std::endl;
     struct utsname systemstats;
-    std::cout << "Processing sysinfo...";
-    sleep(1);
-    std::cout << "!";
+//    std::cout << "Processing sysinfo...";
+//    sleep(1);
+//    std::cout << "!";
     uname(&systemstats);
     std::string z = systemstats.sysname;
     std::string kv = systemstats.machine;
-    std::cout << "Generating CryptVal...!";
+//    std::cout << "Generating CryptVal...!";
     std::time_t cryptval = std::time(nullptr);
-    std::cout << "Generating SecureVal...";
-    sleep(1);
-    std::cout << "!" << std::endl;
+//    std::cout << "Generating SecureVal...";
+//    sleep(1);
+//    std::cout << "!" << std::endl;
     std::string outsecureval = std::asctime(std::localtime(&cryptval));
-    std::cout << "constructing..." << std::endl;
+//    std::cout << "constructing..." << std::endl;
     std::string machine = endProc("zpet"+z+kv+"x49"+outsecureval+".local");
     std::string auth = Encode(machine);
-//    std::cout << machine << std::endl;
-    std::cout << auth << std::endl;
-    if(XC==1) std::cout << auth << std::endl;
+    if(XC==1) std::cout << "Machine Value: " << machine << std::endl;
+    if(XC==1) std::cout << "Generated Auth Key: " << auth << std::endl;
     
     std::string device = macos_run_get_fline("sysctl hw.model | cut -f2 -d':' | cut -f2 -d' '");
     
-    std::string launchRequest = "curl -s --location --request POST 'http://alpha.external.duffy.app:8080/api/analytics' --header 'Content-Type: application/json' --data-raw '{\"analytics\": {\"device\": \"" + device + "\",\"event\": \"" + event + "\",\"auth\": \"" + auth + "\"}}' >/dev/null";
+    std::string launchRequest = "curl -s --location --request POST 'http://alpha.external.duffy.app:8080/api/sandbox' --header 'Content-Type: application/json' --data-raw '{\"device\": \"" + device + "\",\"event\": \"" + event + "\",\"auth\": \"" + auth + "\"}' >/dev/null";
     
 //    std::cout << launchRequest;
-    sleep(2);
+//    sleep(2);
     system(launchRequest.c_str());
-    std::cout << "sent!" << std::endl;
+//    std::cout << "sent!" << std::endl;
 }
 

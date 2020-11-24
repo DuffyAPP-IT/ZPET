@@ -14,13 +14,13 @@ int main(int argc, char *argv[]) {
     int analytics = 0;
     std::string moduleDir = "modules/moduleloader";
     if(XC==1) system("pwd");
-    
+    std::cout << "[*] Initialising" << std::endl;
     std::cout << "\033[1;34m  ___________  ______ _______  \n"
     "\033[1;35m |___  /  __ \\|  ____|__   __|\n"
     "\033[1;31m    / /| |__) | |__     | |    \n"
     "\033[1;36m   / / |  ___/|  __|    | |    \n"
     "\033[1;34m  / /__| |    | |____   | |    \n"
-    "\033[1;31m /_____|_|    |______|  |_|\033[0m v2-internal" << std::endl;
+    "\033[1;31m /_____|_|    |______|  |_|\033[0m v2-18500" << std::endl;
 
     //Check if running as root... (folder permissions restricted for user safety)
     if(getuid()!=0){
@@ -105,10 +105,19 @@ int main(int argc, char *argv[]) {
     switch (userOpt) {
         case 1:
             if (analytics==1) submit_event("userFeatureHit:Checkra1n");
-            //check if checkra1n exists in /Applications, launch with '-c' (ctrl+c back to ZPET)
+            if(is_file_exist("/Applications/checkra1n.app/Contents/MacOS/checkra1n")){
+                std::cout << "[*] Launching checkra1n DFU shortcut" << std::endl;
+                system("/Applications/checkra1n.app/Contents/MacOS/checkra1n -c");
+                std::cout << "[*] ZPETv2 - Exit" << std::endl;
+            } else {
+                std::cout << "[!] checkra1n does not exist (in /Applications...)" << std::endl;
+                if (analytics==1) submit_event("userFeatureHit:Checkra1n");
+                return 1;
+            }
             break;
         case 2:
             if (analytics==1) submit_event("userFeatureHit:SpiderLIVE");
+            
             //check if spider is present in resources/spiderkit... present mini menu in ZPET?
             break;
         case 3:
@@ -142,15 +151,15 @@ int main(int argc, char *argv[]) {
             break;
         
         case 4:
-            submit_event("userFeatureHit:FSAcquire");
+            if(analytics==1) submit_event("userFeatureHit:FSAcquire");
             return 1;
             
         case 5:
-            submit_event("userFeatureHit:SpiderLOCAL");
+            if(analytics==1) submit_event("userFeatureHit:SpiderLOCAL");
             return 1;
             
         case 6:
-            submit_event("userFeatureHit:MapperLocal");
+            if(analytics==1) submit_event("userFeatureHit:MapperLocal");
             return 1;
             
             
