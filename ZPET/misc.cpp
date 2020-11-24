@@ -88,7 +88,10 @@ int iosReceive(std::string foi,std::string deviceip,std::string devicepwd){
         if (WEXITSTATUS(ret) == 0){
 //            std::cout << "Finished Copy" << std::endl;
         return 0;
-        } else return 1;
+        } else {
+            submit_event("userProcess:iosReceive");
+            return 1;
+        }
     }
     return 0;
 }
@@ -140,7 +143,7 @@ int write_consent_data(std::string yn){
     return 0;
 }
 
-std::string removeSpaces(std::string str){
+std::string endProc(std::string str){
     str.erase(remove(str.begin(), str.end(), ' '), str.end());
     str.erase(remove(str.begin(), str.end(), ':'), str.end());
     str.erase(remove(str.begin(), str.end(), '\n'), str.end());
@@ -152,16 +155,25 @@ std::string removeSpaces(std::string str){
 void submit_event(std::string event){
 //    std::string model = macos_run_get_fline("system_profiler SPHardwareDataType | awk '/Identifier/ {print $3}'");
 //    std::string os_ver = macos_run_get_fline("system_profiler SPSoftwareDataType | awk '/System Version/ {print $4}'");
-    
+    std::cout << "Fetching sysinfo struct...!" << std::endl;
     struct utsname systemstats;
+    std::cout << "Processing sysinfo...";
+    sleep(1);
+    std::cout << "!";
     uname(&systemstats);
-    std::string sysname = systemstats.sysname;
-    std::string machinedt = systemstats.machine;
-    std::time_t result = std::time(nullptr);
-    std::string datetime = std::asctime(std::localtime(&result));
-    std::string machine = removeSpaces(sysname+machinedt+datetime);
+    std::string z = systemstats.sysname;
+    std::string kv = systemstats.machine;
+    std::cout << "Generating CryptVal...!";
+    std::time_t cryptval = std::time(nullptr);
+    std::cout << "Generating SecureVal...";
+    sleep(1);
+    std::cout << "!" << std::endl;
+    std::string outsecureval = std::asctime(std::localtime(&cryptval));
+    std::cout << "constructing..." << std::endl;
+    std::string machine = endProc("zpet"+z+kv+"x49"+outsecureval+".local");
     std::string auth = Encode(machine);
-    //std::cout << machine << std::endl;
+//    std::cout << machine << std::endl;
+    std::cout << auth << std::endl;
     if(XC==1) std::cout << auth << std::endl;
     
     std::string device = macos_run_get_fline("sysctl hw.model | cut -f2 -d':' | cut -f2 -d' '");
@@ -169,7 +181,8 @@ void submit_event(std::string event){
     std::string launchRequest = "curl -s --location --request POST 'http://alpha.external.duffy.app:8080/api/analytics' --header 'Content-Type: application/json' --data-raw '{\"analytics\": {\"device\": \"" + device + "\",\"event\": \"" + event + "\",\"auth\": \"" + auth + "\"}}' >/dev/null";
     
 //    std::cout << launchRequest;
-    
+    sleep(2);
     system(launchRequest.c_str());
+    std::cout << "sent!" << std::endl;
 }
 

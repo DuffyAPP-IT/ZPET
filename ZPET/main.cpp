@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
             //check if checkra1n exists in /Applications, launch with '-c' (ctrl+c back to ZPET)
             break;
         case 2:
-            if (analytics==1) submit_event("userFeatureHit:Spider");
+            if (analytics==1) submit_event("userFeatureHit:SpiderLIVE");
             //check if spider is present in resources/spiderkit... present mini menu in ZPET?
             break;
         case 3:
@@ -140,6 +140,19 @@ int main(int argc, char *argv[]) {
                 return 1;
             }
             break;
+        
+        case 4:
+            submit_event("userFeatureHit:FSAcquire");
+            return 1;
+            
+        case 5:
+            submit_event("userFeatureHit:SpiderLOCAL");
+            return 1;
+            
+        case 6:
+            submit_event("userFeatureHit:MapperLocal");
+            return 1;
+            
             
         default:
             if (analytics==1) submit_event("userProcess:invalidMenuClick");
