@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
     
     if(analytics==1) submit_event("userStart");
     
-    std::string Menu[7]={"[LIVE]\tCheckra1n CLI\t\t\t(Boot From DFU)","[LIVE]\tExecute SPIDER Live\t\t\t(User-Data Analysis)","[LIVE]\tExecute ZPETv2 Modules\t\t(Documentation!)","[LIVE]\tAcquire Device Root Filesystem\t(Encryption State Prompt Prior To Acquisition)","[ROOT-FS]\tExecute SPIDER Locally\t\t(User-Data Analysis)","[ROOT-FS]\tExecute Mapper Locally\t\t(Blind Analysis)"};
+    std::string Menu[8]={"[LIVE]\tCheckra1n CLI\t\t\t(Boot From DFU)","[LIVE]\tExecute SPIDER Live\t\t\t(User-Data Analysis)","[LIVE]\tExecute ZPETv2 Modules\t\t(Documentation!)","[LIVE]\tAcquire Device Root Filesystem\t(Encryption State Prompt Prior To Acquisition)","[ROOT-FS]\tExecute SPIDER Locally\t\t(User-Data Analysis)","[ROOT-FS]\tExecute Mapper Locally\t\t(Blind Analysis)","[MISC]\tExit ZPET"};
     
     
     std::cout << "[*] Main Menu" << std::endl;
@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
                 * Return, Unzip In Sensitive
                 * Clean From RHOST
          Notes:
-                * Remember to remount iOS disk as RW!!!
+                * Prerequesite Cleanup!!!
          */
         case 2:{
             if (analytics==1) submit_event("userFeatureHit:SpiderLIVE");
@@ -142,7 +142,7 @@ int main(int argc, char *argv[]) {
                 device.info();
                 std::cout << "\n[*] Preparing Spider..." << std::endl;
                 sleep(5);
-                if(is_file_exist("./resources/spider-integration-live.sh")==0){
+                if(is_file_exist("resources/ios/spider-integration-live.sh")){
                     //mount ios as rw
                     std::string remountDisk = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " 'mount -o rw,union,update / '";
                     system(remountDisk.c_str());
@@ -158,15 +158,15 @@ int main(int argc, char *argv[]) {
                     iosSend("resources/ios/tr", "/usr/bin/tr", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
                     iosSend("resources/ios/paste", "/usr/bin/paste", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
                     
-                    std::string spiderMenuArr[7]={"Database Schema Extraction w/Hidden Database Identification","User-Data Ingest - Keyword Search","Apple Photos Connected Album Data","Exit Spider Integration"};
+                    std::string spiderMenuArr[5]={"Database Schema Extraction w/Hidden Database Identification","User-Data Ingest - Keyword Search","Apple Photos Connected Album Data","Exit Spider Integration"};
                     bool spiderMenu = true;
                     while(spiderMenu){
                         
                         std::string kw; // must be defined outside of switch statement
                         
                         std::cout << "[*] Spider ZPET Integration Menu - Beta" << std::endl;
-                        for(int i=0;i<((sizeof(Menu)/sizeof(Menu[0]))-1);i++){
-                            std::cout << "[" << (i+1) << "] " << Menu[i] << std::endl;
+                        for(int i=0;i<((sizeof(spiderMenuArr)/sizeof(spiderMenuArr[0]))-1);i++){
+                            std::cout << "[" << (i+1) << "] " << spiderMenuArr[i] << std::endl;
                         }
 
                         int userOpt=0;
@@ -176,7 +176,8 @@ int main(int argc, char *argv[]) {
                         switch (userOpt) {
                             case 1:{
                                 std::cout << "[*] Database Schema Extraction" << std::endl;
-                                std::string dbSchemeSpiderLiveCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " '/spider-live-integration.sh -f'";
+                                std::string dbSchemeSpiderLiveCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " '/spider-integration-live.sh -f'";
+                                system(dbSchemeSpiderLiveCMD.c_str());
                                 if(iosReceive("/SpiderOUT", device.ip_addr.c_str(), device.ssh_pw.c_str(), device.port.c_str())==0){
                                     std::cout << "[*] Extraction Complete\n[@] Check SENSITIVE/ & set necessary open cmd depending on structure" << std::endl;
                                 } else {
@@ -190,15 +191,19 @@ int main(int argc, char *argv[]) {
                                 while(KWSearch){
                                     std::cout << "[*] Please Enter A Single Keyword...\n[?] ";
                                     std::cin >> kw;
-                                    char cmdbuf[sizeof(kw)];
-                                    snprintf(cmdbuf, sizeof(kw), "resources/sshpass -p alpine ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@%s -p%s '/spider-integration-live.sh -i  %s'",device.ip_addr.c_str(),device.port.c_str(),kw.c_str());
-                                        std::cout << "[*] Execution Complete" << std::endl;
+                                    char cmdbuf[400];
+                                    snprintf(cmdbuf, 400, "resources/sshpass -p %s ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@%s -p%s '/spider-integration-live.sh -i  %s'",device.ssh_pw.c_str(),device.ip_addr.c_str(),device.port.c_str(),kw.c_str());
+                                    std::cout << cmdbuf << std::endl;
+                                    system(cmdbuf);
+                                    std::cout << "[*] Execution Complete" << std::endl;
                                 }
                                 break;
                             }
                             case 3:{
                                 std::cout << "[*] Apple Photos - Connected Share Data Extraction" << std::endl;
-                                std::string applePhotosSpiderLiveCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " '/spider-live-integration.sh -p'";
+                                std::string applePhotosSpiderLiveCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " '/spider-integration-live.sh -p | tee /SpiderOUT/PhotoData.txt'";
+                                std::cout << applePhotosSpiderLiveCMD;
+                                system(applePhotosSpiderLiveCMD.c_str());
                                 if(iosReceive("/SpiderOUT", device.ip_addr.c_str(), device.ssh_pw.c_str(), device.port.c_str())==0){
                                     std::cout << "[*] Extraction Complete\n[@] Check SENSITIVE/ & set necessary open cmd depending on structure" << std::endl;
                                 } else {
@@ -206,13 +211,16 @@ int main(int argc, char *argv[]) {
                                 }
                                 break;
                             }
+                                
+                            case 4:
+                                spiderMenu = false;
                             default:
                                 std::cout << "[!] Invalid Option" << std::endl;
-                                break;
+                                spiderMenu = false;
                         }
                     }
                 } else{
-                    std::cout << "SPIDER Local ZPET Integration Requires A Full Filesystem Acquisition...Option [4] In ZPETv2!\nChoose [LIVE] Spider For Live Device SPIDER Analysis" << std::endl;
+                    std::cout << "[!] Internal Error" << std::endl;
                 }
                 
                 if(device.connection_type == "ssh" && device.port != "3022") system("pkill iproxy");
@@ -311,7 +319,7 @@ int main(int argc, char *argv[]) {
          */
         case 5:
             if(analytics==1) submit_event("userFeatureHit:SpiderLOCAL");
-                if(is_file_exist("./SENSITIVE/etc/hosts")==0 && is_file_exist("./resources/spider-integration-local.sh")==0){ //verify iOS filesystem is captured & accessible
+                if(is_file_exist("./SENSITIVE/etc/hosts") && is_file_exist("./resources/spider-integration-local.sh")){ //verify iOS filesystem is captured & accessible
                     //Small Menu For Spider Analysis Options
                     std::string spiderMenuArr[7]={"Database Schema Extraction w/Hidden Database Identification","User-Data Ingest - Keyword Search","Apple Photos Connected Album Data","Exit Spider Integration"};
                     bool spiderMenu = true;
@@ -320,8 +328,8 @@ int main(int argc, char *argv[]) {
                         std::string kw; // must be defined outside of switch statement
                         
                         std::cout << "[*] Spider ZPET Integration Menu - Beta" << std::endl;
-                        for(int i=0;i<((sizeof(Menu)/sizeof(Menu[0]))-1);i++){
-                            std::cout << "[" << (i+1) << "] " << Menu[i] << std::endl;
+                        for(int i=0;i<((sizeof(spiderMenuArr)/sizeof(spiderMenuArr[0]))-1);i++){
+                            std::cout << "[" << (i+1) << "] " << spiderMenuArr[i] << std::endl;
                         }
 
                         int userOpt=0;
@@ -379,6 +387,10 @@ int main(int argc, char *argv[]) {
                 
             }
             break;
+                
+        case 7:
+                exitZPET = true;
+                break;
             
             
         default:

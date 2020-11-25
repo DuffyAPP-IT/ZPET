@@ -81,7 +81,7 @@ int iosReceive(std::string foi,std::string deviceip,std::string devicepwd, std::
         std::string receive = "resources/sshpass -p " + devicepwd + " scp -r -P " + deviceport +
         " -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' root@" + deviceip + ":" +
         foi + " SENSITIVE/local 2>/dev/null";
-//        std::cout << receive << std::endl;
+        if(XC==1) std::cout << "iosReceivex -> " << receive << std::endl;
         const char *exec = receive.c_str();
         int ret = system(exec);
 
@@ -99,13 +99,13 @@ int iosReceive(std::string foi,std::string deviceip,std::string devicepwd, std::
 int iosSend(std::string relative_path, std::string absolute_dest, std::string deviceip,std::string devicepwd, std::string deviceport){
     if(is_file_exist("resources/sshpass")) {
         std::string receive = "resources/sshpass -p " + devicepwd + " scp -r -P " + deviceport +
-        " -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' " + relative_path + " root@" + deviceip + ":/" + absolute_dest + " 2>/dev/null";
-//        std::cout << receive << std::endl;
+        " -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' " + relative_path + " root@" + deviceip + ":" + absolute_dest + " 2>/dev/null";
+        if(XC==1) std::cout << "iosSend -> " << receive << std::endl;
         const char *exec = receive.c_str();
         int ret = system(exec);
 
         if (WEXITSTATUS(ret) == 0){
-//            std::cout << "Finished Copy" << std::endl;
+            if(XC==1) std::cout << "[@] Finished Copy" << std::endl;
         return 0;
         } else {
             submit_event("userProcess:iosSendErr");

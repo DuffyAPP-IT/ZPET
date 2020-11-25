@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/binpack/bin/bash
 
 echo [*] ///ZPETv2 SPIDER Local Integration///
 echo [*] Build 3
@@ -53,13 +53,13 @@ then
 
 
 		echo "[+] Extracting Database Schemas (sqlite)"
-		find / -name '*.sqlite' -print -exec ls -lh {} \; -exec sqlite3 {} '.tables' 2>/dev/null \; | tee /SpiderOUT/TableData.txt
+		find / -name '*.sqlite' -print -exec ls -lh {} \; -exec /usr/bin/sqlite3 {} '.tables' 2>/dev/null \; | tee /SpiderOUT/TableData.txt
 
 		echo "[+] Extracting Database Schemas (db)"
-		find / -name '*.db' -print -exec ls -lh {} \; -exec sqlite3 {} '.tables' 2>/dev/null \; | tee /SpiderOUT/TableData.txt
+		find / -name '*.db' -print -exec ls -lh {} \; -exec /usr/bin/sqlite3 {} '.tables' 2>/dev/null \; | tee /SpiderOUT/TableData.txt
   
         echo "[+] Extracting Database Schemas (db)"
-        find / -name '*.db' -print -exec ls -lh {} \; -exec sqlite3 {} '.tables' 2>/dev/null \; | tee /SpiderOUT/TableData.txt
+        find / -name '*.db' -print -exec ls -lh {} \; -exec /usr/bin/sqlite3 {} '.tables' 2>/dev/null \; | tee /SpiderOUT/TableData.txt
         
         echo "[+] Hidden Database Identification...(this may take a while)"
         find / -type f -size +10k -size -800k -not -name "*.db" -not -name "*.sqlite*" -exec file '{}' \; 2>/dev/null | grep -H SQLite | cut -f2 -d':' | tee /SpiderOUT/HiddenDBs.txt
@@ -77,10 +77,10 @@ fi
 if [[ $1 = "-p" ]]
 then
 		echo [+] Extracting ConnectedAlbum Details
-		find /private/var/mobile/Library/MediaStream/albumshare/ -name 'Model.sqlite' -exec sqlite3 {} 'SELECT email FROM 'AccessControls'' \; 2>/dev/null | tee /SpiderOUT/ConnectedAlbum.txt
+		find /private/var/mobile/Library/MediaStream/albumshare/ -name 'Model.sqlite' -exec /usr/bin/sqlite3 {} 'SELECT email FROM 'AccessControls'' \; 2>/dev/null | tee /SpiderOUT/ConnectedAlbum.txt
 
 		echo [+] Extracting SharedAlbum URLs
-		find /private/var/mobile/Library/MediaStream/albumshare/ -name 'Model.sqlite' -exec sqlite3 {} 'SELECT name,url FROM 'Albums'' \; 2>/dev/null | tee /SpiderOUT/SharedAlbum.txt
+		find /private/var/mobile/Library/MediaStream/albumshare/ -name 'Model.sqlite' -exec /usr/bin/sqlite3 {} 'SELECT name,url FROM 'Albums'' \; 2>/dev/null | tee /SpiderOUT/SharedAlbum.txt
         exit 0;
 fi
 
