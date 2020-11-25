@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo ///Welcome To ZPETv2 SPIDER Local Integration///
-echo Build 3
+echo [*] ///ZPETv2 SPIDER Local Integration///
+echo [*] Build 3
 
 if [ $# -eq 0 ]
 then
@@ -81,6 +81,7 @@ then
 
 		echo [+] Extracting SharedAlbum URLs
 		find ../SENSITIVE/private/var/mobile/Library/MediaStream/albumshare/ -name 'Model.sqlite' -exec sqlite3 {} 'SELECT name,url FROM 'Albums'' \; 2>/dev/null | tee ../SENSITIVE/SpiderOUT/SharedAlbum.txt
+        exit 0;
 fi
 
 if [[ $1 = "-i" ]]
@@ -93,6 +94,7 @@ then
 	echo "[+] Searching..."
 	find ../SENSITIVE/ -name '*.sqlite' -exec grep -H $2 {} \; 2>/dev/null | tee ../SENSITIVE/SpiderOUT/MATCHSQLITE.txt 2>/dev/null
 	find ../SENSITIVE/ -name '*.db' -exec grep -H $2 {} \; 2>/dev/null | tee ../SENSITIVE/SpiderOUT/MATCHSQLITE.txt 2>/dev/null
+    exit 0;
 fi
 
 

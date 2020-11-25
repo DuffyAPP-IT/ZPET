@@ -149,7 +149,15 @@ int main(int argc, char *argv[]) {
                 return 1;
             }
             break;
-        
+        /*
+         Full Filesystem Acquisition
+         Last Author: James Duffy, Kevin Mitchell
+         Last Modified: 25-11-2020
+         Purpose: Acquire Device Filesystem
+         Notes:
+                * offer to untar filesystem using tar -xf?
+                * remember to use -C to specify custom tar output (SENSITIVE) as cwd will be root of zpet structure.
+         */
         case 4:
             if(analytics==1) submit_event("userFeatureHit:FSAcquire");
             //Create 'SENSITIVE' Directory For Device Data Processing/Handling
@@ -188,9 +196,78 @@ int main(int argc, char *argv[]) {
                 }
             return 1;
             break;
-            
+        /*
+         Spider - Local Integration
+         Last Author: James Duffy
+         Last Modified: 25-11-2020
+         Purpose: Execute Local Spider w/rootfs
+         Notes:
+                * Verify rootFS exists locally instead of in sh!
+         */
         case 5:
             if(analytics==1) submit_event("userFeatureHit:SpiderLOCAL");
+                if(is_file_exist("./SENSITIVE/etc/hosts")==0){ //verify iOS filesystem is captured & accessible
+                    //Small Menu For Spider Analysis Options
+                    std::string spiderMenuArr[7]={"Database Schema Extraction w/Hidden Database Identification","User-Data Ingest - Keyword Search","Apple Photos Connected Album Data","Exit Spider Integration"};
+                    bool spiderMenu = true;
+                    while(spiderMenu){
+                        
+                        std::string kw; // must be defined outside of switch statement
+                        
+                        std::cout << "[*] Spider ZPET Integration Menu - Beta" << std::endl;
+                        for(int i=0;i<((sizeof(Menu)/sizeof(Menu[0]))-1);i++){
+                            std::cout << "[" << (i+1) << "] " << Menu[i] << std::endl;
+                        }
+
+                        int userOpt=0;
+                        std::cout << "\n[?] ";
+                        std::cin >> userOpt; //replace me with something more secure!
+                        
+                        switch (userOpt) {
+                            case 1:
+                                std::cout << "[*] Database Schema Extraction" << std::endl;
+                                if(macOS_GetExit("resources/spider-local-integration.sh -f")==0){
+                                    std::cout << "[*] Extraction Complete" << std::endl;
+                                    system("open ./SENSITIVE/SpiderOUT");
+                                } else {
+                                    std::cout << "[!] Spider Analysis Did Not Complete" << std::endl;
+                                }
+                                break;
+                            case 2:{
+                                std::cout << "[*] ZPET->Spider KWSearch..." << std::endl;
+                                bool KWSearch = true;
+                                while(KWSearch){
+                                    std::cout << "[*] Please Enter Keyword...\n[?] ";
+                                    std::cin >> kw;
+                                    char cmdbuf[sizeof(kw)];
+                                    snprintf(cmdbuf, sizeof(kw), "./resources/spider-integration-local.sh -i %s",kw.c_str());
+                                    if(macOS_GetExit("resources/spider-local-integration.sh")==0){
+                                        std::cout << "[*] Extraction Complete" << std::endl;
+                                        system("open ./SENSITIVE/SpiderOUT");
+                                    } else {
+                                        std::cout << "[!] Spider Analysis Did Not Complete" << std::endl;
+                                    }
+                                }
+                                break;
+                            }
+                            case 3:
+                                std::cout << "[*] Apple Photos - Connected Share Data Extraction" << std::endl;
+                                if(macOS_GetExit("resources/spider-local-integration.sh -p")==0){
+                                    std::cout << "[*] Extraction Complete" << std::endl;
+                                    system("open ./SENSITIVE/SpiderOUT");
+                                } else {
+                                    std::cout << "[!] Spider Analysis Did Not Complete" << std::endl;
+                                }
+                                break;
+                                break;
+                            default:
+                                std::cout << "Invalid Option" << std::endl;
+                                break;
+                        }
+                    }
+                } else{
+                    std::cout << "SPIDER Local ZPET Integration Requires A Full Filesystem Acquisition...Option [4] In ZPETv2!\nChoose [LIVE] Spider For Live Device SPIDER Analysis" << std::endl;
+                }
             return 1;
             
         case 6:

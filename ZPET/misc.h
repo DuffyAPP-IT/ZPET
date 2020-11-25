@@ -9,7 +9,7 @@
 #ifndef misc_h
 #define misc_h
 
-#define XC 0
+#define XC 1
 
 
 
