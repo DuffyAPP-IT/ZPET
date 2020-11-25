@@ -283,9 +283,10 @@
 		332BCA27254038570079C142 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D8RCN9C7X6;
+				PRODUCT_BUNDLE_IDENTIFIER = zpet.duffyapp.it;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -293,9 +294,10 @@
 		332BCA28254038570079C142 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D8RCN9C7X6;
+				PRODUCT_BUNDLE_IDENTIFIER = zpet.duffyapp.it;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
