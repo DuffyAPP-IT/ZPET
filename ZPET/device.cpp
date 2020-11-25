@@ -76,7 +76,7 @@ Device init_device(std::string connection_type){
             std::cout << "[+] Connection Established" << std::endl;
             connected.can_connnect=true;
         } else{
-            std::cout << "[!] didnt retrieve :(" << std::endl;
+            if(XC==1) std::cout << "[!] didnt retrieve (device.cpp) :(" << std::endl;
             connected.can_connnect=false;
             return connected;
         }

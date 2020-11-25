@@ -78,6 +78,9 @@ int main(int argc, char *argv[]) {
     
     //BASIC INIT END
     
+    //LOOP
+    bool exitZPET = false;
+    while (exitZPET==false){
     /*
      ZPETv2 - Main Menu
      Last Author: James Duffy
@@ -107,7 +110,6 @@ int main(int argc, char *argv[]) {
             if(is_file_exist("/Applications/checkra1n.app/Contents/MacOS/checkra1n")){
                 std::cout << "[*] Launching checkra1n DFU shortcut" << std::endl;
                 system("/Applications/checkra1n.app/Contents/MacOS/checkra1n -c");
-                std::cout << "[*] ZPETv2 - Exit" << std::endl;
             } else {
                 std::cout << "[!] checkra1n does not exist (in /Applications...)" << std::endl;
                 if (analytics==1) submit_event("userFeatureHit:Checkra1n");
@@ -143,7 +145,8 @@ int main(int argc, char *argv[]) {
                         } else{
                             if (analytics==1) submit_event("userProcess:deviceCanConnectERR");
                             std::cout << "\n[!] Device Did Not Connect Successfully...";
-                            exit(1);
+                            sleep(5);
+                            return 1;
                         }
                 }
                 return 1;
@@ -191,10 +194,9 @@ int main(int argc, char *argv[]) {
                     } else{
                         if (analytics==1) submit_event("userProcess:deviceCanConnectERR");
                         std::cout << "\n[!] Device Did Not Connect Successfully...";
-                        exit(1);
+                        sleep(5);
                     }
                 }
-            return 1;
             break;
         /*
          Spider - Local Integration
@@ -281,5 +283,6 @@ int main(int argc, char *argv[]) {
             break;
     }
     return 0;
+}
 }
 }

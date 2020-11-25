@@ -135,7 +135,7 @@ void process_modules(Device device){
     int err_limit = 3;
     for(int i=0;i<(loadedmodcount);i++){
         if(err_count>=err_limit){
-            std::cout << "[!] Error Limit Hit...Exiting For Safety - (check moduleloader!)" << std::endl;
+            std::cout << "[!] Error Limit Hit...Exiting For Safety - (check moduleloader & ensure valid modules are set to execute)" << std::endl;
             exit(1);
         }
         if(mods[i].validate()==0){
