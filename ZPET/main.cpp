@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
     
     if(analytics==1) submit_event("userStart");
     
-    std::string Menu[7]={"[LIVE]\tCheckra1n CLI\t\t\t(Boot From DFU)","[LIVE]\tExecute SPIDER\t\t\t(User-Data Analysis)","[LIVE]\tExecute ZPETv2 Modules\t\t(Documentation!)","[LIVE]\tAcquire Device Root Filesystem\t(Encryption State Prompt Prior To Acquisition)","[ROOT-FS]\tExecute SPIDER Locally\t\t(User-Data Analysis)","[ROOT-FS]\tExecute Mapper Locally\t\t(Blind Analysis)"};
+    std::string Menu[7]={"[LIVE]\tCheckra1n CLI\t\t\t(Boot From DFU)","[LIVE]\tExecute SPIDER Live\t\t\t(User-Data Analysis)","[LIVE]\tExecute ZPETv2 Modules\t\t(Documentation!)","[LIVE]\tAcquire Device Root Filesystem\t(Encryption State Prompt Prior To Acquisition)","[ROOT-FS]\tExecute SPIDER Locally\t\t(User-Data Analysis)","[ROOT-FS]\tExecute Mapper Locally\t\t(Blind Analysis)"};
     
     
     std::cout << "[*] Main Menu" << std::endl;
@@ -116,11 +116,98 @@ int main(int argc, char *argv[]) {
                 return 1;
             }
             break;
-        case 2:
+        /*
+         SpiderLIVE
+         Last Author: James Duffy
+         Last Modified: 25-11-2020
+         Process:
+                * Initialise Device Object
+                * Send Device Prerequesites (check al_v2)
+                * Send Live Spider Agent To Device Via SCP
+                * Execute Remotely
+                * Zip SpiderOUT On RHOST
+                * Return, Unzip In Sensitive
+                * Clean From RHOST
+         Notes:
+                * Remember to remount iOS disk as RW!!!
+         */
+        case 2:{
             if (analytics==1) submit_event("userFeatureHit:SpiderLIVE");
-            
-            //check if spider is present in resources/spiderkit... present mini menu in ZPET?
-            break;
+            //Basic Device Init
+            std::cout << "\n[*] Initialising Device\n" << std::endl;
+            //Initialise 'device' object...
+            Device device = init_device("ssh");
+            //Dump information for debugging purposes
+            if(device.can_connnect){
+                device.info();
+                std::cout << "\n[*] Preparing Spider..." << std::endl;
+                sleep(5);
+                
+                if(is_file_exist("./resources/spider-integration-live.sh")==0){
+                    std::string spiderMenuArr[7]={"Database Schema Extraction w/Hidden Database Identification","User-Data Ingest - Keyword Search","Apple Photos Connected Album Data","Exit Spider Integration"};
+                    bool spiderMenu = true;
+                    while(spiderMenu){
+                        
+                        std::string kw; // must be defined outside of switch statement
+                        
+                        std::cout << "[*] Spider ZPET Integration Menu - Beta" << std::endl;
+                        for(int i=0;i<((sizeof(Menu)/sizeof(Menu[0]))-1);i++){
+                            std::cout << "[" << (i+1) << "] " << Menu[i] << std::endl;
+                        }
+
+                        int userOpt=0;
+                        std::cout << "\n[?] ";
+                        std::cin >> userOpt; //replace me with something more secure!
+                        
+                        switch (userOpt) {
+                            case 1:
+                                std::cout << "[*] Database Schema Extraction" << std::endl;
+                                if(macOS_GetExit("resources/spider-local-integration.sh -f")==0){
+                                    std::cout << "[*] Extraction Complete" << std::endl;
+                                    system("open ./SENSITIVE/SpiderOUT");
+                                } else {
+                                    std::cout << "[!] Spider Analysis Did Not Complete" << std::endl;
+                                }
+                                break;
+                            case 2:{
+                                std::cout << "[*] ZPET->Spider KWSearch..." << std::endl;
+                                bool KWSearch = true;
+                                while(KWSearch){
+                                    std::cout << "[*] Please Enter Keyword...\n[?] ";
+                                    std::cin >> kw;
+                                    char cmdbuf[sizeof(kw)];
+                                    snprintf(cmdbuf, sizeof(kw), "resources/sshpass -p alpine ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@%s -p%s '/spider-integration-live.sh -i %s'",device.ip_addr.c_str(),device.port.c_str(),kw.c_str());
+                                        std::cout << "[*] Execution Complete" << std::endl;
+                                }
+                                break;
+                            }
+                            case 3:
+                                std::cout << "[*] Apple Photos - Connected Share Data Extraction" << std::endl;
+                                if(macOS_GetExit("resources/spider-local-integration.sh -p")==0){
+                                    std::cout << "[*] Extraction Complete" << std::endl;
+                                    system("open ./SENSITIVE/SpiderOUT");
+                                } else {
+                                    std::cout << "[!] Spider Analysis Did Not Complete" << std::endl;
+                                }
+                                break;
+                            default:
+                                std::cout << "Invalid Option" << std::endl;
+                                break;
+                        }
+                    }
+                } else{
+                    std::cout << "SPIDER Local ZPET Integration Requires A Full Filesystem Acquisition...Option [4] In ZPETv2!\nChoose [LIVE] Spider For Live Device SPIDER Analysis" << std::endl;
+                }
+                
+                if(device.connection_type == "ssh" && device.port != "3022") system("pkill iproxy");
+            } else{
+                if (analytics==1) submit_event("userProcess:deviceCanConnectERR");
+                std::cout << "\n[!] Device Did Not Connect Successfully...";
+                sleep(5);
+                return 1;
+            }
+        break;
+        }
         case 3:
             if (analytics==1) submit_event("userFeatureHit:ZPETModuleProc");
                 //Create 'SENSITIVE' Directory For Device Data Processing/Handling
@@ -208,7 +295,7 @@ int main(int argc, char *argv[]) {
          */
         case 5:
             if(analytics==1) submit_event("userFeatureHit:SpiderLOCAL");
-                if(is_file_exist("./SENSITIVE/etc/hosts")==0){ //verify iOS filesystem is captured & accessible
+                if(is_file_exist("./SENSITIVE/etc/hosts")==0 && is_file_exist("./resources/spider-integration-local.sh")==0){ //verify iOS filesystem is captured & accessible
                     //Small Menu For Spider Analysis Options
                     std::string spiderMenuArr[7]={"Database Schema Extraction w/Hidden Database Identification","User-Data Ingest - Keyword Search","Apple Photos Connected Album Data","Exit Spider Integration"};
                     bool spiderMenu = true;
@@ -261,7 +348,6 @@ int main(int argc, char *argv[]) {
                                     std::cout << "[!] Spider Analysis Did Not Complete" << std::endl;
                                 }
                                 break;
-                                break;
                             default:
                                 std::cout << "Invalid Option" << std::endl;
                                 break;
@@ -270,11 +356,13 @@ int main(int argc, char *argv[]) {
                 } else{
                     std::cout << "SPIDER Local ZPET Integration Requires A Full Filesystem Acquisition...Option [4] In ZPETv2!\nChoose [LIVE] Spider For Live Device SPIDER Analysis" << std::endl;
                 }
-            return 1;
-            
+                break;
         case 6:
             if(analytics==1) submit_event("userFeatureHit:MapperLocal");
-            return 1;
+            if(is_file_exist("./SENSITIVE/etc/hosts")==0 && is_file_exist("./resources/mapper-integration-local.sh")==0){
+                
+            }
+            break;
             
             
         default:
