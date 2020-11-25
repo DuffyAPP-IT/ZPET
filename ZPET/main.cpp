@@ -142,8 +142,22 @@ int main(int argc, char *argv[]) {
                 device.info();
                 std::cout << "\n[*] Preparing Spider..." << std::endl;
                 sleep(5);
-                
                 if(is_file_exist("./resources/spider-integration-live.sh")==0){
+                    //mount ios as rw
+                    std::string remountDisk = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " 'mount -o rw,union,update / '";
+                    system(remountDisk.c_str());
+                    
+                    
+                    //send live prereqs...
+                    iosSend("resources/ios/spider-integration-live.sh", "/spider-integration-live.sh", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
+                    iosSend("resources/ios/sqlite3", "/usr/bin/sqlite3", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
+                    iosSend("resources/ios/sqlite3.h", "/usr/include/sqlite3.h", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
+                    iosSend("resources/ios/sqlite3ext.h", "/usr/include/sqlite3ext.h", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
+                    iosSend("resources/ios/libreadline.7.dylib", "/usr/lib/libreadline.7.dylib", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
+                    iosSend("resources/ios/libncurses.6.dylib", "/usr/lib/libncurses.6.dylib", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
+                    iosSend("resources/ios/tr", "/usr/bin/tr", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
+                    iosSend("resources/ios/paste", "/usr/bin/paste", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
+                    
                     std::string spiderMenuArr[7]={"Database Schema Extraction w/Hidden Database Identification","User-Data Ingest - Keyword Search","Apple Photos Connected Album Data","Exit Spider Integration"};
                     bool spiderMenu = true;
                     while(spiderMenu){
@@ -160,38 +174,40 @@ int main(int argc, char *argv[]) {
                         std::cin >> userOpt; //replace me with something more secure!
                         
                         switch (userOpt) {
-                            case 1:
+                            case 1:{
                                 std::cout << "[*] Database Schema Extraction" << std::endl;
-                                if(macOS_GetExit("resources/spider-local-integration.sh -f")==0){
-                                    std::cout << "[*] Extraction Complete" << std::endl;
-                                    system("open ./SENSITIVE/SpiderOUT");
+                                std::string dbSchemeSpiderLiveCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " '/spider-live-integration.sh -f'";
+                                if(iosReceive("/SpiderOUT", device.ip_addr.c_str(), device.ssh_pw.c_str(), device.port.c_str())==0){
+                                    std::cout << "[*] Extraction Complete\n[@] Check SENSITIVE/ & set necessary open cmd depending on structure" << std::endl;
                                 } else {
                                     std::cout << "[!] Spider Analysis Did Not Complete" << std::endl;
                                 }
                                 break;
+                            }
                             case 2:{
                                 std::cout << "[*] ZPET->Spider KWSearch..." << std::endl;
                                 bool KWSearch = true;
                                 while(KWSearch){
-                                    std::cout << "[*] Please Enter Keyword...\n[?] ";
+                                    std::cout << "[*] Please Enter A Single Keyword...\n[?] ";
                                     std::cin >> kw;
                                     char cmdbuf[sizeof(kw)];
-                                    snprintf(cmdbuf, sizeof(kw), "resources/sshpass -p alpine ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@%s -p%s '/spider-integration-live.sh -i %s'",device.ip_addr.c_str(),device.port.c_str(),kw.c_str());
+                                    snprintf(cmdbuf, sizeof(kw), "resources/sshpass -p alpine ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@%s -p%s '/spider-integration-live.sh -i  %s'",device.ip_addr.c_str(),device.port.c_str(),kw.c_str());
                                         std::cout << "[*] Execution Complete" << std::endl;
                                 }
                                 break;
                             }
-                            case 3:
+                            case 3:{
                                 std::cout << "[*] Apple Photos - Connected Share Data Extraction" << std::endl;
-                                if(macOS_GetExit("resources/spider-local-integration.sh -p")==0){
-                                    std::cout << "[*] Extraction Complete" << std::endl;
-                                    system("open ./SENSITIVE/SpiderOUT");
+                                std::string applePhotosSpiderLiveCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " '/spider-live-integration.sh -p'";
+                                if(iosReceive("/SpiderOUT", device.ip_addr.c_str(), device.ssh_pw.c_str(), device.port.c_str())==0){
+                                    std::cout << "[*] Extraction Complete\n[@] Check SENSITIVE/ & set necessary open cmd depending on structure" << std::endl;
                                 } else {
                                     std::cout << "[!] Spider Analysis Did Not Complete" << std::endl;
                                 }
                                 break;
+                            }
                             default:
-                                std::cout << "Invalid Option" << std::endl;
+                                std::cout << "[!] Invalid Option" << std::endl;
                                 break;
                         }
                     }
@@ -271,7 +287,7 @@ int main(int argc, char *argv[]) {
                         if (getcwd(cwd, sizeof(cwd)) != NULL) {
                             printf("[+] Dumping rootfs in current working directory\n");
                             char commandBuffer[PATH_MAX];
-                            snprintf(commandBuffer, sizeof(commandBuffer), "resources/sshpass -p alpine ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@%s -p%s 'tar zcf - / 2>/dev/null' | resources/pv > SENSITIVE/filesystem.tar",device.ip_addr.c_str(),device.port.c_str());
+                            snprintf(commandBuffer, sizeof(commandBuffer), "resources/sshpass -p %s ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@%s -p%s 'tar zcf - / 2>/dev/null' | resources/pv > SENSITIVE/filesystem.tar",device.ssh_pw.c_str(),device.ip_addr.c_str(),device.port.c_str());
                             system(commandBuffer);
                             if(device.connection_type == "ssh" && device.port != "3022") system("pkill iproxy");
                         } else {

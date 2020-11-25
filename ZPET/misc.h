@@ -54,6 +54,7 @@ int countLinesInTxt(char *txtname);
 int scanHandler(Module mod,const std::string& DEVICEIP,const std::string& DEVICEPORT,const std::string& DEVICEPW);
 
 int iosReceive(std::string foi,std::string deviceip,std::string devicepwd, std::string deviceport);
+int iosSend(std::string relative_path, std::string absolute_dest, std::string deviceip,std::string devicepwd, std::string deviceport);
 
 int macOS_GetExit(std::string command);
 char *macos_run_get_fline(char *command);

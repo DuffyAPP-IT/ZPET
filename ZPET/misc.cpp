@@ -96,6 +96,25 @@ int iosReceive(std::string foi,std::string deviceip,std::string devicepwd, std::
     return 0;
 }
 
+int iosSend(std::string relative_path, std::string absolute_dest, std::string deviceip,std::string devicepwd, std::string deviceport){
+    if(is_file_exist("resources/sshpass")) {
+        std::string receive = "resources/sshpass -p " + devicepwd + " scp -r -P " + deviceport +
+        " -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' " + relative_path + " root@" + deviceip + ":/" + absolute_dest + " 2>/dev/null";
+//        std::cout << receive << std::endl;
+        const char *exec = receive.c_str();
+        int ret = system(exec);
+
+        if (WEXITSTATUS(ret) == 0){
+//            std::cout << "Finished Copy" << std::endl;
+        return 0;
+        } else {
+            submit_event("userProcess:iosSendErr");
+            return 1;
+        }
+    }
+    return 0;
+}
+
 int macOS_GetExit(std::string command){
     const char *exec = command.c_str();
     int ret = system(exec);
