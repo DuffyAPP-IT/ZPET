@@ -143,20 +143,20 @@ int main(int argc, char *argv[]) {
                 std::cout << "\n[*] Preparing Spider..." << std::endl;
                 sleep(5);
                 if(is_file_exist("resources/ios/spider-integration-live.sh")){
-                    //mount ios as rw
+                    //mount device as rw
                     std::string remountDisk = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " 'mount -o rw,union,update / '";
                     system(remountDisk.c_str());
                     
                     
                     //send live prereqs...
-                    iosSend("resources/ios/spider-integration-live.sh", "/spider-integration-live.sh", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
-                    iosSend("resources/ios/sqlite3", "/usr/bin/sqlite3", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
-                    iosSend("resources/ios/sqlite3.h", "/usr/include/sqlite3.h", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
-                    iosSend("resources/ios/sqlite3ext.h", "/usr/include/sqlite3ext.h", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
-                    iosSend("resources/ios/libreadline.7.dylib", "/usr/lib/libreadline.7.dylib", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
-                    iosSend("resources/ios/libncurses.6.dylib", "/usr/lib/libncurses.6.dylib", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
-                    iosSend("resources/ios/tr", "/usr/bin/tr", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
-                    iosSend("resources/ios/paste", "/usr/bin/paste", device.ip_addr.c_str(), device.ssh_pw, device.port.c_str());
+                    iosSend("resources/ios/spider-integration-live.sh", "/spider-integration-live.sh", device);
+                    iosSend("resources/ios/sqlite3", "/usr/bin/sqlite3", device);
+                    iosSend("resources/ios/sqlite3.h", "/usr/include/sqlite3.h", device);
+                    iosSend("resources/ios/sqlite3ext.h", "/usr/include/sqlite3ext.h", device);
+                    iosSend("resources/ios/libreadline.7.dylib", "/usr/lib/libreadline.7.dylib", device);
+                    iosSend("resources/ios/libncurses.6.dylib", "/usr/lib/libncurses.6.dylib", device);
+                    iosSend("resources/ios/tr", "/usr/bin/tr", device);
+                    iosSend("resources/ios/paste", "/usr/bin/paste", device);
                     
                     std::string spiderMenuArr[5]={"Database Schema Extraction w/Hidden Database Identification","User-Data Ingest - Keyword Search","Apple Photos Connected Album Data","Exit Spider Integration"};
                     bool spiderMenu = true;
@@ -222,6 +222,15 @@ int main(int argc, char *argv[]) {
                 } else{
                     std::cout << "[!] Internal Error" << std::endl;
                 }
+                
+                //Clean Prerequesites
+                iosRM("/spider-integration-live.sh", device);
+                iosRM("/usr/bin/sqlite3", device);
+                iosRM("/usr/include/sqlite3.h", device);
+                iosRM("/usr/include/sqlite3ext.h", device);
+                iosRM("/usr/lib/libncurses.6.dylib", device);
+                iosRM("/usr/bin/tr", device);
+                iosRM("/usr/bin/paste", device);
                 
                 if(device.connection_type == "ssh" && device.port != "3022") system("pkill iproxy");
             } else{
@@ -383,8 +392,10 @@ int main(int argc, char *argv[]) {
                 break;
         case 6:
             if(analytics==1) submit_event("userFeatureHit:MapperLocal");
-            if(is_file_exist("./SENSITIVE/etc/hosts")==0 && is_file_exist("./resources/mapper-integration-local.sh")==0){
-                
+            if(is_file_exist("./SENSITIVE/etc/hosts") && is_file_exist("./resources/mapper.sh")){
+                system("resources/mapper.sh");
+            } else{
+                std::cout << "Mapper For ZPET Requires A Full Filesystem Acquisition...Option [4] In ZPET!" << std::endl;
             }
             break;
                 

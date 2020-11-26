@@ -96,10 +96,10 @@ int iosReceive(std::string foi,std::string deviceip,std::string devicepwd, std::
     return 0;
 }
 
-int iosSend(std::string relative_path, std::string absolute_dest, std::string deviceip,std::string devicepwd, std::string deviceport){
+int iosSend(std::string relative_path, std::string absolute_dest, Device device){
     if(is_file_exist("resources/sshpass")) {
-        std::string receive = "resources/sshpass -p " + devicepwd + " scp -r -P " + deviceport +
-        " -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' " + relative_path + " root@" + deviceip + ":" + absolute_dest + " 2>/dev/null";
+        std::string receive = "resources/sshpass -p " + device.ssh_pw + " scp -r -P " + device.port +
+        " -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' " + relative_path + " root@" + device.ip_addr + ":" + absolute_dest + " 2>/dev/null";
         if(XC==1) std::cout << "iosSend -> " << receive << std::endl;
         const char *exec = receive.c_str();
         int ret = system(exec);
@@ -114,6 +114,25 @@ int iosSend(std::string relative_path, std::string absolute_dest, std::string de
     }
     return 0;
 }
+
+int iosRM(std::string absolute_path, Device device){
+    if(is_file_exist("resources/sshpass")) {
+        std::string rmCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " 'rm " + absolute_path + "'";
+        if(XC==1) std::cout << "iosRM -> " << rmCMD << std::endl;
+        const char *exec = rmCMD.c_str();
+        int ret = system(exec);
+
+        if (WEXITSTATUS(ret) == 0){
+            if(XC==1) std::cout << "[@] RM Operation Complete" << std::endl;
+        return 0;
+        } else {
+            submit_event("userProcess:iosRMErr");
+            return 1;
+        }
+    }
+    return 0;
+}
+
 
 int macOS_GetExit(std::string command){
     const char *exec = command.c_str();
