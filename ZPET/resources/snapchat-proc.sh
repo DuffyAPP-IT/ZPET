@@ -63,7 +63,7 @@ fi
 
 echo "---------"
 
-sleep 500
+sleep 5
 
 sqlline="select hex(message_content) from conversation_message"
 sid="select sender_id from conversation_message"
@@ -206,6 +206,8 @@ rm $count.rtime
 count=$[$count +1]
 done <readtimeout
 
+rm adatain
+rm adataout
 rm blobdata
 rm siddatain
 rm siddataout

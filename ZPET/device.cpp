@@ -41,7 +41,7 @@ Device init_device(std::string connection_type){
         std::cin >> connected.ip_addr;
         if(connected.ip_addr=="usb") connected.ip_addr="127.0.0.1";
         
-        std::cout << "[?] Device Port? ('44' For USB-SSH Checkra1n): ";
+        std::cout << "[?] Device Port? ('44' For USB-SSH Checkra1n (iOS 12/13/14) / '22' For iOS 14 (BFU-Only)): ";
         std::cin >> connected.port;
         
         /*
@@ -96,7 +96,7 @@ Device init_device(std::string connection_type){
         //Need to configure this! placeholder for now. maybe hash output sent to a file too.
         connected.device_id=(rand() % 100000 + 1);
         
-        connected.display_name="Research iPhone";
+        connected.display_name="Research iPhone"; //Placeholder
         
         //complete!
         return connected;
@@ -119,7 +119,7 @@ void Device::info(){
     if(can_connnect) std::cout << "Connected!" << std::endl;
     if(!can_connnect) std::cout << "Disconnected!" << std::endl;
     
-    std::cout << "\n[*]\tDisplay Name\t" << display_name << std::endl;
+//    std::cout << "\n[*]\tDisplay Name\t" << display_name << std::endl;
     std::cout << "[*]\tiOS Version\t" << major_os_ver << std::endl;
     std::cout << "[*]\tEncryption State\t";
     if(crypt_state==1) std::cout << "Encrypted (BFU)" << std::endl;

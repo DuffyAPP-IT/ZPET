@@ -86,7 +86,7 @@ int iosReceive(std::string foi,std::string deviceip,std::string devicepwd, std::
         int ret = system(exec);
 
         if (WEXITSTATUS(ret) == 0){
-//            std::cout << "Finished Copy" << std::endl;
+            std::cout << "Finished Copy" << std::endl;
         return 0;
         } else {
             submit_event("userProcess:iosReceiveErr");
