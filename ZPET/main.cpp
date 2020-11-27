@@ -21,6 +21,17 @@ int main(int argc, char *argv[]) {
     "\033[1;36m   / / |  ___/|  __|    | |    \n"
     "\033[1;34m  / /__| |    | |____   | |    \n"
     "\033[1;31m /_____|_|    |______|  |_|\033[0m v2-18500-RC" << std::endl;
+    
+//        std::cout <<
+//    "----------\nExperimental\n----------\n"
+//    "    o  o              o  o               o  o    \n"
+//    " o        o        o        o         o        o \n"
+//    "o  James's o      o  James's o       o  James's o\n"
+//    "o  morning o      o afternoon o      o  evening o\n"
+//    " o        o        o        o         o        o \n"
+//    "    o  o              o  o               o  o    \n"
+//        << std::endl;
+
 
     //Check if running as root... (folder permissions restricted for user safety)
     if(getuid()!=0){
