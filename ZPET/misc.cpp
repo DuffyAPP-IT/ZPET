@@ -89,7 +89,7 @@ int iosReceive(std::string foi,std::string deviceip,std::string devicepwd, std::
             std::cout << "Finished Copy" << std::endl;
         return 0;
         } else {
-            submit_event("userProcess:iosReceiveErr");
+            if(load_consent_data()=="y") submit_event("userProcess:iosReceiveErr");
             return 1;
         }
     }
@@ -108,7 +108,7 @@ int iosSend(std::string relative_path, std::string absolute_dest, Device device)
             if(XC==1) std::cout << "[@] Finished Copy" << std::endl;
         return 0;
         } else {
-            submit_event("userProcess:iosSendErr");
+            if(load_consent_data()=="y") submit_event("userProcess:iosSendErr");
             return 1;
         }
     }
@@ -126,7 +126,7 @@ int iosRM(std::string absolute_path, Device device){
             if(XC==1) std::cout << "[@] RM Operation Complete" << std::endl;
         return 0;
         } else {
-            submit_event("userProcess:iosRMErr");
+            if(load_consent_data()=="y") submit_event("userProcess:iosRMErr");
             return 1;
         }
     }
