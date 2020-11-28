@@ -7,7 +7,7 @@
 //
 
 #include "processor.hpp"
-#include "misc.h"
+#include "../misc.h"
 #include <iostream>
 
 int plistproc(std::string foi, std::string key, std::string piperesult, std::string IP, std::string PORT, std::string DEVICEPW){

@@ -46,7 +46,7 @@
 #endif
 
 
-#include "module.hpp"
+#include "moduleproc/module.hpp"
 int check_binary_in_path(std::string bin);
 
 

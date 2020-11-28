@@ -7,8 +7,8 @@
 //
 
 #include "module.hpp"
-#include "misc.h"
-#include "device.hpp"
+#include "../misc.h"
+#include "../device.hpp"
 
 //
 // Created by 010011 on 06/10/2020.

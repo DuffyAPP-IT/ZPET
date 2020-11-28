@@ -10,9 +10,9 @@
 // Created by 010011 on 06/10/2020.
 //
 
-#include "module.hpp"
+#include "moduleproc/module.hpp"
 #include "misc.h"
-#include "processor.hpp"
+#include "moduleproc/processor.hpp"
 #include <ctime>
 #include "Base64.h"
 #include <sys/utsname.h>

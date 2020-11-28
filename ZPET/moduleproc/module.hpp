@@ -13,7 +13,7 @@
 #include <fstream>
 #include <string>
 #include <stdio.h>
-#include "device.hpp"
+#include "../device.hpp"
 
 bool is_file_exist(const char *fileName);
 
