@@ -1,7 +1,6 @@
 <img src="OUT%20ZPET%20DESIGN%20FINAL-05.png">
 
 # ZPETv2 - Open Source iOS Forensics
-![ZPETv2 macOS](https://github.com/DuffyAPP-IT/ZPET/workflows/ZPETv2%20macOS/badge.svg)
 
 ---
 
@@ -24,8 +23,6 @@ With ZPET being written in C++, ZPET is, at it's core, fully cross platform. How
 There are no requirements for external dongles or proprietary cables.
 
 ### Software Requirements
-
-[Untitled](https://www.notion.so/47da82edbcaa4e7b993c79964ef3461c)
 
 ZPET can operate in a completely offline environment. There are some optional analytics you can enable - and I would really appreciate it if you did! Although there's absolutely no obligation. Absolutely zero PII will be submitted, and the source code is open for auditing via GitHub.
 
