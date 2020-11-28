@@ -13,6 +13,7 @@
 		332BCA3225403B1C0079C142 /* processor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 332BCA3025403B1C0079C142 /* processor.cpp */; };
 		332BCA3525403E0B0079C142 /* modules in Copy Files */ = {isa = PBXBuildFile; fileRef = 332BCA3425403E040079C142 /* modules */; };
 		332BCA3625403E0B0079C142 /* resources in Copy Files */ = {isa = PBXBuildFile; fileRef = 332BCA3325403E040079C142 /* resources */; };
+		3385DDCB2564970900595F94 /* device.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3385DDC92564970900595F94 /* device.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -41,6 +42,9 @@
 		332BCA3125403B1C0079C142 /* processor.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = processor.hpp; sourceTree = "<group>"; };
 		332BCA3325403E040079C142 /* resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = resources; sourceTree = "<group>"; };
 		332BCA3425403E040079C142 /* modules */ = {isa = PBXFileReference; lastKnownFileType = folder; path = modules; sourceTree = "<group>"; };
+		333D219D25685AC0009EE642 /* Base64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Base64.h; sourceTree = "<group>"; };
+		3385DDC92564970900595F94 /* device.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = device.cpp; sourceTree = "<group>"; };
+		3385DDCA2564970900595F94 /* device.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = device.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,17 +77,28 @@
 		332BCA21254038570079C142 /* ZPET */ = {
 			isa = PBXGroup;
 			children = (
+				3385DDCD256497D000595F94 /* moduleproc */,
 				332BCA3425403E040079C142 /* modules */,
 				332BCA3325403E040079C142 /* resources */,
 				332BCA22254038570079C142 /* main.cpp */,
 				332BCA2A254039FE0079C142 /* misc.h */,
 				332BCA2B25403A540079C142 /* misc.cpp */,
-				332BCA2D25403A760079C142 /* module.cpp */,
+				3385DDC92564970900595F94 /* device.cpp */,
+				3385DDCA2564970900595F94 /* device.hpp */,
+				333D219D25685AC0009EE642 /* Base64.h */,
+			);
+			path = ZPET;
+			sourceTree = "<group>";
+		};
+		3385DDCD256497D000595F94 /* moduleproc */ = {
+			isa = PBXGroup;
+			children = (
 				332BCA2E25403A760079C142 /* module.hpp */,
 				332BCA3025403B1C0079C142 /* processor.cpp */,
 				332BCA3125403B1C0079C142 /* processor.hpp */,
+				332BCA2D25403A760079C142 /* module.cpp */,
 			);
-			path = ZPET;
+			path = moduleproc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -145,6 +160,7 @@
 			files = (
 				332BCA2F25403A760079C142 /* module.cpp in Sources */,
 				332BCA23254038570079C142 /* main.cpp in Sources */,
+				3385DDCB2564970900595F94 /* device.cpp in Sources */,
 				332BCA3225403B1C0079C142 /* processor.cpp in Sources */,
 				332BCA2C25403A540079C142 /* misc.cpp in Sources */,
 			);
@@ -267,9 +283,10 @@
 		332BCA27254038570079C142 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D8RCN9C7X6;
+				PRODUCT_BUNDLE_IDENTIFIER = zpet.duffyapp.it;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -277,9 +294,10 @@
 		332BCA28254038570079C142 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = D8RCN9C7X6;
+				PRODUCT_BUNDLE_IDENTIFIER = zpet.duffyapp.it;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

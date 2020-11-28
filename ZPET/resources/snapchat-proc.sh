@@ -71,7 +71,8 @@ sleep 1
 echo -n "."
 sleep 1
 echo -n "."
-`
+
+
 sqlline="select hex(message_content) from conversation_message"
 sid="select sender_id from conversation_message"
 senttime="SELECT DATETIME(ROUND(creation_timestamp / 1000), 'unixepoch') AS isodate FROM conversation_message"

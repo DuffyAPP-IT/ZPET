@@ -9,6 +9,8 @@
 #ifndef misc_h
 #define misc_h
 
+#define XC 0
+
 
 
 //Standard Library Imports
@@ -17,6 +19,10 @@
 #include <string>
 #include <sys/stat.h>
 #include <unistd.h>
+//New Additions
+#include <limits.h>
+#include <dirent.h>
+#include <errno.h>
 
 //Platform specific definitions
 #if __APPLE__
@@ -41,15 +47,24 @@
 
 
 #include "module.hpp"
-int verifyPrereqs();
+int check_binary_in_path(std::string bin);
 
 
 int countLinesInTxt(char *txtname);
 int scanHandler(Module mod,const std::string& DEVICEIP,const std::string& DEVICEPORT,const std::string& DEVICEPW);
 
-int iosReceive(std::string foi,std::string deviceip,std::string devicepwd);
+int iosReceive(std::string foi,std::string deviceip,std::string devicepwd, std::string deviceport);
+int iosSend(std::string relative_path, std::string absolute_dest, Device device);
 
 int macOS_GetExit(std::string command);
+char *macos_run_get_fline(char *command);
+
+
+std::string load_consent_data();
+int write_consent_data(std::string yn);
+void submit_event(std::string event);
+
+int iosRM(std::string absolute_path, Device device);
 
 
 #endif /* misc_h */
