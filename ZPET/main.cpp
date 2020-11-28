@@ -63,6 +63,8 @@ int main(int argc, char *argv[]) {
             exit(1);
         }
     } else{ //first launch consent
+        std::system("cd resources/ios && unzip resources.zip >/dev/null 2>/dev/null"); //unpack resources.zip
+        std::system("sudo chmod -R 777 resources");
         std::cout << "---------\nWelcome To ZPET\n---------" << std::endl;
         std::cout << "ZPET is actively developed by a single developer, myself, @J_Duffy01 !" << std::endl;
         std::cout << "I have implemented very basic, *non-attributable*, optional analytics - i've made this transparent, showing example requests for each event:\n" << std::endl;
