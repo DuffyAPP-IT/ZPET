@@ -17,6 +17,7 @@
 #include "Base64.h"
 #include <sys/utsname.h>
 #include <unistd.h>
+#include <string.h>
 
 /*
  check_binary_in_path
