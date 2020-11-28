@@ -24,6 +24,7 @@ public:
     
     int major_os_ver; // 12,13,14 etc.
     int crypt_state; // BFU=1, AFU=2
+//    int pin_attempt_wipe; // SET=1 NOT-SET=0
     
     bool can_connnect; // checks for device access
     
