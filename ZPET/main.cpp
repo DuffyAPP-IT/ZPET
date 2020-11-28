@@ -204,7 +204,7 @@ int main(int argc, char *argv[]) {
                                     std::cin >> kw;
                                     char cmdbuf[400];
                                     snprintf(cmdbuf, 400, "resources/sshpass -p %s ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@%s -p%s '/spider-integration-live.sh -i  %s'",device.ssh_pw.c_str(),device.ip_addr.c_str(),device.port.c_str(),kw.c_str());
-                                    std::cout << cmdbuf << std::endl;
+//                                    std::cout << cmdbuf << std::endl;
                                     system(cmdbuf);
                                     std::cout << "[*] Execution Complete" << std::endl;
                                 }
@@ -313,13 +313,13 @@ int main(int argc, char *argv[]) {
                         sleep(5);
                         char cwd[PATH_MAX];
                         if (getcwd(cwd, sizeof(cwd)) != NULL) {
-                            printf("[+] Dumping rootfs in current working directory\n");
+                            printf("[+] Acquiring Device Filesystem\n");
                             char commandBuffer[PATH_MAX];
                             snprintf(commandBuffer, sizeof(commandBuffer), "resources/sshpass -p %s ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@%s -p%s 'tar zcf - / 2>/dev/null' | resources/pv > SENSITIVE/filesystem.tar",device.ssh_pw.c_str(),device.ip_addr.c_str(),device.port.c_str());
                             system(commandBuffer);
                             if(device.connection_type == "ssh" && device.port != "3022") system("pkill iproxy");
                         } else {
-                            printf("[-] Error getting current working directory\n");
+                            printf("[-] Error fetching current working directory\n");
                             exit(1);
                        }
                     } else{
