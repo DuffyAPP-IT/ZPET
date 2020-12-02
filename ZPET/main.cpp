@@ -203,7 +203,7 @@ int main(int argc, char *argv[]) {
                                 while(KWSearch){
                                     std::cout << "[*] Please Enter A Single Keyword...\n[?] ";
                                     std::cin >> kw;
-                                    char cmdbuf[400];
+                                    char cmdbuf[400]; //temporary static buffer
                                     snprintf(cmdbuf, 400, "resources/sshpass -p %s ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@%s -p%s '/spider-integration-live.sh -i  %s'",device.ssh_pw.c_str(),device.ip_addr.c_str(),device.port.c_str(),kw.c_str());
 //                                    std::cout << cmdbuf << std::endl;
                                     system(cmdbuf);
@@ -373,9 +373,9 @@ int main(int argc, char *argv[]) {
                                 while(KWSearch){
                                     std::cout << "[*] Please Enter Keyword...\n[?] ";
                                     std::cin >> kw;
-                                    char cmdbuf[sizeof(kw)];
-                                    snprintf(cmdbuf, sizeof(kw), "./resources/spider-integration-local.sh -i %s",kw.c_str());
-                                    if(macOS_GetExit("resources/spider-integration-local.sh")==0){
+                                    char cmdbuf[400]; //temporary static buffer size, need to fix
+                                    snprintf(cmdbuf, 400, "./resources/spider-integration-local.sh -i %s",kw.c_str());
+                                    if(macOS_GetExit(cmdbuf)==0){
                                         std::cout << "[*] Extraction Complete" << std::endl;
                                         system("open ./SENSITIVE/SpiderOUT");
                                     } else {
