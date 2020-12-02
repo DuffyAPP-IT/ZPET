@@ -160,7 +160,6 @@ int main(int argc, char *argv[]) {
                     std::string remountDisk = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " 'mount -o rw,union,update / '";
                     system(remountDisk.c_str());
                     
-                    
                     //send live prereqs...
                     iosSend("resources/ios/spider-integration-live.sh", "/spider-integration-live.sh", device);
                     iosSend("resources/ios/sqlite3", "/usr/bin/sqlite3", device);
@@ -341,7 +340,7 @@ int main(int argc, char *argv[]) {
          */
         case 5:
             if(analytics==1) submit_event("userFeatureHit:SpiderLOCAL");
-                if(is_file_exist("./SENSITIVE/etc/hosts") && is_file_exist("./resources/spider-integration-local.sh")){ //verify iOS filesystem is captured & accessible
+                if(is_file_exist("./SENSITIVE/private/etc/hosts") && is_file_exist("./resources/spider-integration-local.sh")){ //verify iOS filesystem is captured & accessible
                     //Small Menu For Spider Analysis Options
                     std::string spiderMenuArr[7]={"Database Schema Extraction w/Hidden Database Identification","User-Data Ingest - Keyword Search","Apple Photos Connected Album Data","Exit Spider Integration"};
                     bool spiderMenu = true;
@@ -361,7 +360,7 @@ int main(int argc, char *argv[]) {
                         switch (userOpt) {
                             case 1:
                                 std::cout << "[*] Database Schema Extraction" << std::endl;
-                                if(macOS_GetExit("resources/spider-local-integration.sh -f")==0){
+                                if(macOS_GetExit("resources/spider-integration-local.sh -f")==0){
                                     std::cout << "[*] Extraction Complete" << std::endl;
                                     system("open ./SENSITIVE/SpiderOUT");
                                 } else {
@@ -376,7 +375,7 @@ int main(int argc, char *argv[]) {
                                     std::cin >> kw;
                                     char cmdbuf[sizeof(kw)];
                                     snprintf(cmdbuf, sizeof(kw), "./resources/spider-integration-local.sh -i %s",kw.c_str());
-                                    if(macOS_GetExit("resources/spider-local-integration.sh")==0){
+                                    if(macOS_GetExit("resources/spider-integration-local.sh")==0){
                                         std::cout << "[*] Extraction Complete" << std::endl;
                                         system("open ./SENSITIVE/SpiderOUT");
                                     } else {
@@ -387,7 +386,7 @@ int main(int argc, char *argv[]) {
                             }
                             case 3:
                                 std::cout << "[*] Apple Photos - Connected Share Data Extraction" << std::endl;
-                                if(macOS_GetExit("resources/spider-local-integration.sh -p")==0){
+                                if(macOS_GetExit("resources/spider-integration-local.sh -p")==0){
                                     std::cout << "[*] Extraction Complete" << std::endl;
                                     system("open ./SENSITIVE/SpiderOUT");
                                 } else {
