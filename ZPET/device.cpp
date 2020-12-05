@@ -64,7 +64,7 @@ Device init_device(std::string connection_type){
                     connected.can_connnect=false;
                     return connected;
                 } else std::cout << "[+] USB Proxy Initialised" << std::endl;
-                if(connected.port=="44") connected.port="7788"; //Device To Locally Mapped Port
+                if(connected.port=="44" || connected.port=="22") connected.port="7788"; //Device To Locally Mapped Port
             }
         }
         
