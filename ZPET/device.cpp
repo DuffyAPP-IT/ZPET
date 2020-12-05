@@ -16,6 +16,7 @@ Device init_device(std::string connection_type){
     Device connected;
     connected.connection_type=connection_type;
     
+//    __asm int 3;
     if(connection_type=="ssh"){
         /*
          Prerequesite Checks - SSH
@@ -76,7 +77,7 @@ Device init_device(std::string connection_type){
             std::cout << "[+] Connection Established" << std::endl;
             connected.can_connnect=true;
         } else{
-            if(XC==1) std::cout << "[!] didnt retrieve (device.cpp) :(" << std::endl;
+            if(dbg==1) std::cout << "[!] didnt retrieve (device.cpp) :(" << std::endl;
             connected.can_connnect=false;
             return connected;
         }

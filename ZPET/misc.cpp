@@ -82,7 +82,7 @@ int iosReceive(std::string foi,std::string deviceip,std::string devicepwd, std::
         std::string receive = "resources/sshpass -p " + devicepwd + " scp -r -P " + deviceport +
         " -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' root@" + deviceip + ":" +
         foi + " SENSITIVE/local 2>/dev/null";
-        if(XC==1) std::cout << "iosReceivex -> " << receive << std::endl;
+        if(dbg==1) std::cout << "iosReceivex -> " << receive << std::endl;
         const char *exec = receive.c_str();
         int ret = system(exec);
 
@@ -101,12 +101,12 @@ int iosSend(std::string relative_path, std::string absolute_dest, Device device)
     if(is_file_exist("resources/sshpass")) {
         std::string receive = "resources/sshpass -p " + device.ssh_pw + " scp -r -P " + device.port +
         " -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' " + relative_path + " root@" + device.ip_addr + ":" + absolute_dest + " 2>/dev/null";
-        if(XC==1) std::cout << "iosSend -> " << receive << std::endl;
+        if(dbg==1) std::cout << "iosSend -> " << receive << std::endl;
         const char *exec = receive.c_str();
         int ret = system(exec);
 
         if (WEXITSTATUS(ret) == 0){
-            if(XC==1) std::cout << "[@] Finished Copy" << std::endl;
+            if(dbg==1) std::cout << "[@] Finished Copy" << std::endl;
         return 0;
         } else {
             if(load_consent_data()=="y") submit_event("userProcess:iosSendErr");
@@ -119,12 +119,12 @@ int iosSend(std::string relative_path, std::string absolute_dest, Device device)
 int iosRM(std::string absolute_path, Device device){
     if(is_file_exist("resources/sshpass")) {
         std::string rmCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " 'rm " + absolute_path + "'";
-        if(XC==1) std::cout << "iosRM -> " << rmCMD << std::endl;
+        if(dbg==1) std::cout << "iosRM -> " << rmCMD << std::endl;
         const char *exec = rmCMD.c_str();
         int ret = system(exec);
 
         if (WEXITSTATUS(ret) == 0){
-            if(XC==1) std::cout << "[@] RM Operation Complete" << std::endl;
+            if(dbg==1) std::cout << "[@] RM Operation Complete" << std::endl;
         return 0;
         } else {
             if(load_consent_data()=="y") submit_event("userProcess:iosRMErr");
@@ -211,8 +211,8 @@ void submit_event(std::string event){
 //    std::cout << "constructing..." << std::endl;
     std::string machine = endProc("zpet"+z+kv+"x49"+outsecureval+".local");
     std::string auth = Encode(machine);
-    if(XC==1) std::cout << "Machine Value: " << machine << std::endl;
-    if(XC==1) std::cout << "Generated Auth Key: " << auth << std::endl;
+    if(dbg==1) std::cout << "Machine Value: " << machine << std::endl;
+    if(dbg==1) std::cout << "Generated Auth Key: " << auth << std::endl;
     
     std::string device = macos_run_get_fline("sysctl hw.model | cut -f2 -d':' | cut -f2 -d' '");
     

@@ -9,9 +9,7 @@
 #ifndef misc_h
 #define misc_h
 
-#define XC 0
-
-
+extern int dbg;
 
 //Standard Library Imports
 #include <iostream>
