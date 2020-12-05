@@ -47,6 +47,8 @@ Device init_device(std::string connection_type){
         
         /*
          Initialising USB SSH Proxy
+         Last Modified: 05-12-2020
+         Author: James Duffy
          Notes:
                 * Checks if ip_addr is 127.0.0.1 - If it's anything else, we're not connecting via USB
                 * Redirect device port to localhost '7788' for ZPET to use as a communication channel
@@ -54,17 +56,17 @@ Device init_device(std::string connection_type){
                 * Finally re-assign 'port' variable to 7788, as the device port is now irrelevant due to the new mapping.
          */
         if(connected.ip_addr=="127.0.0.1"){
-            if(connected.port != "3022"){ //EIFT Port Exclusion
-                std::string usbproxyconfig = "sudo iproxy 7788 " + connected.port + "  2>/dev/null >/dev/null &";
-    //            system(usbproxyconfig.c_str());
-                const char *exec = usbproxyconfig.c_str();
-                int ret = system(exec);
-                if (WEXITSTATUS(ret) != 0){
-                    std::cout << "\n[!] iProxy Could Not Be Initialised Correctly...\nIs libimobiledevice Installed? (try 'brew install libimobiledevice')";
-                    connected.can_connnect=false;
-                    return connected;
-                } else std::cout << "[+] USB Proxy Initialised" << std::endl;
-                if(connected.port=="44" || connected.port=="22") connected.port="7788"; //Device To Locally Mapped Port
+            std::string usbproxyconfig = "sudo iproxy 7788 " + connected.port + "  2>/dev/null >/dev/null &";
+//            system(usbproxyconfig.c_str());
+            const char *exec = usbproxyconfig.c_str();
+            int ret = system(exec);
+            if (WEXITSTATUS(ret) != 0){
+                std::cout << "\n[!] iProxy Could Not Be Initialised Correctly...\nIs libimobiledevice Installed? (try 'brew install libimobiledevice')";
+                connected.can_connnect=false;
+                return connected;
+            } else{
+                std::cout << "[+] USB Proxy Initialised" << std::endl;
+                connected.port="7788"; //Device To Locally Mapped Port - Can't reference device port on localhost.
             }
         }
         
