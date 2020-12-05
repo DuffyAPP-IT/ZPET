@@ -16,6 +16,7 @@ Device init_device(std::string connection_type){
     Device connected;
     connected.connection_type=connection_type;
     
+    __asm int 3;
     if(connection_type=="ssh"){
         /*
          Prerequesite Checks - SSH
@@ -53,7 +54,7 @@ Device init_device(std::string connection_type){
                 * Finally re-assign 'port' variable to 7788, as the device port is now irrelevant due to the new mapping.
          */
         if(connected.ip_addr=="127.0.0.1"){
-            if(connected.port != "3022"){ //EIFT Port Exclusion
+            if(connected.port != "3022"){ //EIFT Port Edbglusion
                 std::string usbproxyconfig = "sudo iproxy 7788 " + connected.port + "  2>/dev/null >/dev/null &";
     //            system(usbproxyconfig.c_str());
                 const char *exec = usbproxyconfig.c_str();
@@ -76,7 +77,7 @@ Device init_device(std::string connection_type){
             std::cout << "[+] Connection Established" << std::endl;
             connected.can_connnect=true;
         } else{
-            if(XC==1) std::cout << "[!] didnt retrieve (device.cpp) :(" << std::endl;
+            if(dbg==1) std::cout << "[!] didnt retrieve (device.cpp) :(" << std::endl;
             connected.can_connnect=false;
             return connected;
         }

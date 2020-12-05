@@ -10,10 +10,21 @@
 #include "misc.h"
 #include "device.hpp"
 
+int dbg = 0; //Debug Switch
+
 int main(int argc, char *argv[]) {
+    
+    /*
+     PreLaunch Debug Switch Check
+     dbg=0 debug off
+     dbg=1 debug on
+     */
+    if(argv[1]!=NULL && strcmp(argv[1],"-x")==0) dbg=1;
+    
+    if(dbg==1) std::cout << "[@] Debug Mode Enabled" << std::endl;
     int analytics = 0;
     std::string moduleDir = "modules/moduleloader";
-    if(XC==1) system("pwd");
+    if(dbg==1) system("pwd");
     std::cout << "[*] Initialising" << std::endl;
     std::cout << "\033[1;34m  ___________  ______ _______  \n"
     "\033[1;35m |___  /  __ \\|  ____|__   __|\n"
@@ -53,10 +64,10 @@ int main(int argc, char *argv[]) {
     //UserConsent Checker
     if(is_file_exist(".analytics")){
         if(load_consent_data()=="y"){
-            if (XC==1) std::cout << "[@] user consent enabled" << std::endl;
+            if (dbg==1) std::cout << "[@] user consent enabled" << std::endl;
             analytics=1;
         } else if(load_consent_data()=="n"){
-            if (XC==1) std::cout << "[@] user consent disabled" << std::endl;
+            if (dbg==1) std::cout << "[@] user consent disabled" << std::endl;
             analytics=0;
         } else{
             std::cout << "[!] Invalid Consent State" << std::endl;
@@ -90,10 +101,8 @@ int main(int argc, char *argv[]) {
     }
     
     //BASIC INIT END
-    
-    //LOOP
-    bool exitZPET = false;
-    while (exitZPET==false){
+    bool exitZPET = false;  //LOOP
+    while (!exitZPET){
     /*
      ZPETv2 - Main Menu
      Last Author: James Duffy
@@ -333,7 +342,7 @@ int main(int argc, char *argv[]) {
         /*
          Spider - Local Integration
          Last Author: James Duffy
-         Last Modified: 25-11-2020
+         Last Modified: 01-12-2020
          Purpose: Execute Local Spider w/rootfs
          Notes:
                 * Verify rootFS exists locally instead of in sh!
