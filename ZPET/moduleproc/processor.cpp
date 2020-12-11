@@ -1,6 +1,7 @@
 //
 //  processor.cpp
 //  ZPET
+//  Last Modified: 11-12-2020
 //
 //  Created by James Duffy on 21/10/2020.
 //  Copyright © 2020 James Duffy. All rights reserved.
@@ -29,7 +30,7 @@ int plistproc(std::string foi, std::string key, std::string piperesult, std::str
         
         return 0;
     } else{
-        std::cout << "[!] Module Could Not Execute - iosRecieve Failed...\nIs The Target Device Connected & Checkra1n'ed?" << std::endl;
+        std::cout << "[!] Module Could Not Execute - Device Communication Failed...\nIs The Target Device Connected?" << std::endl;
         return 1;
     }
 }
@@ -47,14 +48,14 @@ int sqliteproc(std::string foi, std::string query, std::string piperesult, std::
         std::system(proc);
         return 0;
     } else{
-        std::cout << "[!] Module Could Not Execute - iosRecieve Failed...\nIs The Target Device Connected & Checkra1n'ed?" << std::endl;
+        std::cout << "[!] Module Could Not Execute - Device Communication Failed...\nIs The Target Device Connected?" << std::endl;
         return 1;
     }
 }
 
 int jsonproc(std::string foi, std::string sval, std::string IP, std::string PORT, std::string DEVICEPW){
     if(JSON_COMPAT!=1) return 2; //1 meaning compatible in this case
-    std::cout << "[!] Module Could Not Execute - iosRecieve Failed...\nIs The Target Device Connected & Checkra1n'ed?" << std::endl;
+    std::cout << "[!] Module Could Not Execute - Device Communication Failed...\nIs The Target Device Connected?" << std::endl;
     return 1;
 }
 
