@@ -150,7 +150,7 @@ void process_modules(Device device){
             std::cout << "----------" << std::endl;
         } else{
             std::cout << "=========\n[!] Module" << i << " did not pass the initial validator!\n=========\n";
-            if(load_consent_data()=="y") submit_event("userProcess:moduleValidateError");
+            submit_event("userProcess:moduleValidateError");
         }
     }
 }

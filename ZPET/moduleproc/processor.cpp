@@ -54,7 +54,7 @@ int sqliteproc(std::string foi, std::string query, std::string piperesult, std::
 }
 
 int jsonproc(std::string foi, std::string sval, std::string IP, std::string PORT, std::string DEVICEPW){
-    if(JSON_COMPAT!=1) return 2; //1 meaning compatible in this case
+    if(JSON_COMPAT!=1) return 2;
     std::cout << "[!] Module Could Not Execute - Device Communication Failed...\nIs The Target Device Connected?" << std::endl;
     return 1;
 }

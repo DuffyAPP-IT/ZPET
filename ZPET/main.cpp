@@ -11,6 +11,8 @@
 #include "device.hpp"
 
 int dbg = 0; //Debug Switch
+int telem = 0; //Analytics Consent Switch
+int telem_sub_count = 0; //Telemetry Submission Counter
 
 int main(int argc, char *argv[]) {
     
@@ -20,19 +22,24 @@ int main(int argc, char *argv[]) {
      dbg=1 debug on
      */
     if(argv[1]!=NULL && strcmp(argv[1],"-x")==0) dbg=1;
-    
     if(dbg==1) std::cout << "[@] Debug Mode Enabled" << std::endl;
-    int analytics = 0;
+    
+    //Reset Telem State
+    if(argv[1]!=NULL && strcmp(argv[1],"-rt")==0){
+        std::cout << "[@] Internal Debug - Telemetry State Reset" << std::endl;
+        if(remove(".analytics")!=0) std::cout << "[!] Error - Analytics State Did Not Exist!" << std::endl;
+    }
+
     std::string moduleDir = "modules/moduleloader";
     if(dbg==1) system("pwd");
-    std::cout << "[*] Initialising" << std::endl;
+
     std::cout << "\033[1;34m  ___________  ______ _______  \n"
     "\033[1;35m |___  /  __ \\|  ____|__   __|\n"
     "\033[1;31m    / /| |__) | |__     | |    \n"
     "\033[1;36m   / / |  ___/|  __|    | |    \n"
     "\033[1;34m  / /__| |    | |____   | |    \n"
-    "\033[1;31m /_____|_|    |______|  |_|\033[0m v2-18500-RC" << std::endl;
-    
+    "\033[1;31m /_____|_|    |______|  |_|\033[0m v2-18600-INTERNAL" << std::endl;
+    std::cout << "[*] Initialising" << std::endl;
 //        std::cout <<
 //    "----------\nExperimental\n----------\n"
 //    "    o  o              o  o               o  o    \n"
@@ -46,35 +53,50 @@ int main(int argc, char *argv[]) {
 
     //Check if running as root... (folder permissions restricted for user safety)
     if(getuid()!=0){
-        std::cout << "ZPETv2 Must Be Run As Root! (sudo ./ZPET)" << std::endl;
+        std::cout << "ZPET Must Be Run As Root! (sudo ./ZPET)" << std::endl;
         return 1;
     }
     
     
     /*
-     ModuleLoader - Basic Prerequesite Check
-     'moduleloader' *must* be present for ZPETv2 core functionality
-     External modules are listed inside moduleloader for, well, loading!
+     ModuleLoader
+     Purpose: Basic Prerequesite Check
+     Author: James Duffy
+     Last Modified: 11-12-2020
+     Notes:
+      - 'moduleloader' *must* be present for ZPETv2 core functionality
+      - External modules are listed inside moduleloader to enable, well, loading!
      */
     if (!is_file_exist(moduleDir.c_str())) {
-        std::cout << "[!] ZPET component 'moduleloader' is missing!\nIf you downloaded the repository from GitHub, you will be missing components...\nThe extra components are bundled in the release build. Check releases in GitHub!" << std::endl;
+        std::cout << "[!] ZPET core component 'moduleloader' is missing!\nThe extra components are bundled in the release build. Check releases in GitHub!" << std::endl;
         return 1;
     }
     
-    //UserConsent Checker
+    /*
+     Telemetry Consent Processor
+     Purpose:
+        * Check for present '.analytics' file denoting a current analytics state (if so, load it)
+        * If not, launch a flow enabling the user to create said file and set telemetry state.
+     Author: James Duffy
+     Last Modified: 11-12-2020
+     */
     if(is_file_exist(".analytics")){
         if(load_consent_data()=="y"){
             if (dbg==1) std::cout << "[@] user consent enabled" << std::endl;
-            analytics=1;
+            telem = 1;
         } else if(load_consent_data()=="n"){
             if (dbg==1) std::cout << "[@] user consent disabled" << std::endl;
-            analytics=0;
+            telem = 0;
         } else{
             std::cout << "[!] Invalid Consent State" << std::endl;
-            exit(1);
+            exit(1); // forced exit for safety.
         }
-    } else{ //first launch consent
-        std::system("cd resources/ios && unzip resources.zip >/dev/null 2>/dev/null"); //unpack resources.zip
+    } else{ //first launch consent flow
+        // check if unpacked file is present - if so, do not attempt unzip!!
+        if(!is_file_exist("resources/ios/paste")){
+            std::system("cd resources/ios && unzip resources.zip >/dev/null 2>/dev/null");
+        }
+        
         std::system("sudo chmod -R 777 resources");
         std::cout << "---------\nWelcome To ZPET\n---------" << std::endl;
         std::cout << "ZPET is actively developed by a single developer, myself, @J_Duffy01 !" << std::endl;
@@ -87,12 +109,12 @@ int main(int argc, char *argv[]) {
         std::cin >> consent_data;
         if(consent_data=="y"){
             write_consent_data("y");
-            analytics=1;
+            telem = 1;
             submit_event("userAnalytic:enable");
             std::cout << "\n";
         } else if(consent_data=="n"){
             write_consent_data("n");
-            analytics=0;
+            telem = 0;
             std::cout << "\n";
         } else{
             std::cout << "Invalid Consent Response" << std::endl;
@@ -112,7 +134,7 @@ int main(int argc, char *argv[]) {
             * Menu item array size based on amount of items (dynamic array? not sure if you can do this easily in c++?)
      */
     
-    if(analytics==1) submit_event("userStart");
+    submit_event("userStart");
     
     std::string Menu[8]={"[LIVE]\tCheckra1n CLI\t\t\t(Boot From DFU)","[LIVE]\tExecute SPIDER Live\t\t\t(User-Data Analysis)","[LIVE]\tExecute ZPETv2 Modules\t\t(Documentation!)","[LIVE]\tAcquire Device Root Filesystem\t(Encryption State Prompt Prior To Acquisition)","[ROOT-FS]\tExecute SPIDER Locally\t\t(User-Data Analysis)","[ROOT-FS]\tExecute Mapper Locally\t\t(Blind Analysis)","[MISC]\tExit ZPET"};
     
@@ -128,13 +150,13 @@ int main(int argc, char *argv[]) {
     
     switch (userOpt) {
         case 1:
-            if (analytics==1) submit_event("userFeatureHit:Checkra1n");
+            submit_event("userFeatureHit:Checkra1n");
             if(is_file_exist("/Applications/checkra1n.app/Contents/MacOS/checkra1n")){
                 std::cout << "[*] Launching checkra1n DFU shortcut" << std::endl;
                 system("/Applications/checkra1n.app/Contents/MacOS/checkra1n -c");
             } else {
                 std::cout << "[!] checkra1n does not exist (in /Applications...)" << std::endl;
-                if (analytics==1) submit_event("userFeatureHit:Checkra1n");
+                submit_event("userFeatureHit:Checkra1n");
                 return 1;
             }
             break;
@@ -154,7 +176,7 @@ int main(int argc, char *argv[]) {
                 * Prerequesite Cleanup!!!
          */
         case 2:{
-            if (analytics==1) submit_event("userFeatureHit:SpiderLIVE");
+            submit_event("userFeatureHit:SpiderLIVE");
             //Basic Device Init
             std::cout << "\n[*] Initialising Device\n" << std::endl;
             //Initialise 'device' object...
@@ -255,7 +277,7 @@ int main(int argc, char *argv[]) {
                 
                 if(device.connection_type == "ssh" && device.port != "3022") system("pkill iproxy");
             } else{
-                if (analytics==1) submit_event("userProcess:deviceCanConnectERR");
+                submit_event("userProcess:deviceCanConnectERR");
                 std::cout << "\n[!] Device Did Not Connect Successfully...";
                 sleep(5);
                 return 1;
@@ -263,13 +285,13 @@ int main(int argc, char *argv[]) {
         break;
         }
         case 3:
-            if (analytics==1) submit_event("userFeatureHit:ZPETModuleProc");
+            submit_event("userFeatureHit:ZPETModuleProc");
                 //Create 'SENSITIVE' Directory For Device Data Processing/Handling
                 //Notes - set permissions appropriately... currently set to world rw... root only!
                 if (mkdir("SENSITIVE", 0777)) {
                     std::system("sudo rm -rf SENSITIVE 2>/dev/null");
                     if (mkdir("SENSITIVE", 0777)) {
-                        if (analytics==1) submit_event("userProcess:sensitiveDirCreateErr");
+                        submit_event("userProcess:sensitiveDirCreateErr");
                         std::cout << "Does The SENSITIVE Directory Already Exist? Back It Up & Delete It!..." << std::endl;
                         return 1;
                     } else{
@@ -284,7 +306,7 @@ int main(int argc, char *argv[]) {
                             process_modules(device);
                             if(device.connection_type == "ssh" && device.port != "3022") system("pkill iproxy");
                         } else{
-                            if (analytics==1) submit_event("userProcess:deviceCanConnectERR");
+                            submit_event("userProcess:deviceCanConnectERR");
                             std::cout << "\n[!] Device Did Not Connect Successfully...";
                             sleep(5);
                             return 1;
@@ -303,13 +325,13 @@ int main(int argc, char *argv[]) {
                 * remember to use -C to specify custom tar output (SENSITIVE) as cwd will be root of zpet structure.
          */
         case 4:
-            if(analytics==1) submit_event("userFeatureHit:FSAcquire");
+            submit_event("userFeatureHit:FSAcquire");
             //Create 'SENSITIVE' Directory For Device Data Processing/Handling
             //Notes - set permissions appropriately... currently set to world rw... root only!
             if (mkdir("SENSITIVE", 0777)) {
                 std::system("sudo rm -rf SENSITIVE 2>/dev/null");
                 if (mkdir("SENSITIVE", 0777)) {
-                    if (analytics==1) submit_event("userProcess:sensitiveDirCreateErr");
+                    submit_event("userProcess:sensitiveDirCreateErr");
                     std::cout << "Does The SENSITIVE Directory Already Exist? Back It Up & Delete It!..." << std::endl;
                     return 1;
                 } else{
@@ -333,7 +355,7 @@ int main(int argc, char *argv[]) {
                             exit(1);
                        }
                     } else{
-                        if (analytics==1) submit_event("userProcess:deviceCanConnectERR");
+                        submit_event("userProcess:deviceCanConnectERR");
                         std::cout << "\n[!] Device Did Not Connect Successfully...";
                         sleep(5);
                     }
@@ -348,7 +370,7 @@ int main(int argc, char *argv[]) {
                 * Verify rootFS exists locally instead of in sh!
          */
         case 5:
-            if(analytics==1) submit_event("userFeatureHit:SpiderLOCAL");
+            submit_event("userFeatureHit:SpiderLOCAL");
                 if(is_file_exist("./SENSITIVE/private/etc/hosts") && is_file_exist("./resources/spider-integration-local.sh")){ //verify iOS filesystem is captured & accessible
                     //Small Menu For Spider Analysis Options
                     std::string spiderMenuArr[7]={"Database Schema Extraction w/Hidden Database Identification","User-Data Ingest - Keyword Search","Apple Photos Connected Album Data","Exit Spider Integration"};
@@ -412,7 +434,7 @@ int main(int argc, char *argv[]) {
                 }
                 break;
         case 6:
-            if(analytics==1) submit_event("userFeatureHit:MapperLocal");
+            submit_event("userFeatureHit:MapperLocal");
             if(is_file_exist("./SENSITIVE/etc/hosts") && is_file_exist("./resources/mapper.sh")){
                 system("resources/mapper.sh");
             } else{
@@ -426,7 +448,7 @@ int main(int argc, char *argv[]) {
             
             
         default:
-            if (analytics==1) submit_event("userProcess:invalidMenuClick");
+            submit_event("userProcess:invalidMenuClick");
             std::cout << "[!] Invalid Option!" << std::endl;
             break;
     }

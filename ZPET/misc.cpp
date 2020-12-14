@@ -90,7 +90,7 @@ int iosReceive(std::string foi,std::string deviceip,std::string devicepwd, std::
             std::cout << "[+] Finished Copy" << std::endl;
         return 0;
         } else {
-            if(load_consent_data()=="y") submit_event("userProcess:iosReceiveErr");
+            submit_event("userProcess:iosReceiveErr");
             return 1;
         }
     }
@@ -109,7 +109,7 @@ int iosSend(std::string relative_path, std::string absolute_dest, Device device)
             if(dbg==1) std::cout << "[@] Finished Copy" << std::endl;
         return 0;
         } else {
-            if(load_consent_data()=="y") submit_event("userProcess:iosSendErr");
+            submit_event("userProcess:iosSendErr");
             return 1;
         }
     }
@@ -127,7 +127,7 @@ int iosRM(std::string absolute_path, Device device){
             if(dbg==1) std::cout << "[@] RM Operation Complete" << std::endl;
         return 0;
         } else {
-            if(load_consent_data()=="y") submit_event("userProcess:iosRMErr");
+            submit_event("userProcess:iosRMErr");
             return 1;
         }
     }
@@ -192,35 +192,27 @@ std::string endProc(std::string str){
 
 
 void submit_event(std::string event){
-//    std::string model = macos_run_get_fline("system_profiler SPHardwareDataType | awk '/Identifier/ {print $3}'");
-//    std::string os_ver = macos_run_get_fline("system_profiler SPSoftwareDataType | awk '/System Version/ {print $4}'");
-//    std::cout << "Fetching sysinfo struct...!" << std::endl;
-    struct utsname systemstats;
-//    std::cout << "Processing sysinfo...";
-//    sleep(1);
-//    std::cout << "!";
-    uname(&systemstats);
-    std::string z = systemstats.sysname;
-    std::string kv = systemstats.machine;
-//    std::cout << "Generating CryptVal...!";
-    std::time_t cryptval = std::time(nullptr);
-//    std::cout << "Generating SecureVal...";
-//    sleep(1);
-//    std::cout << "!" << std::endl;
-    std::string outsecureval = std::asctime(std::localtime(&cryptval));
-//    std::cout << "constructing..." << std::endl;
-    std::string machine = endProc("zpet"+z+kv+"x49"+outsecureval+".local");
-    std::string auth = Encode(machine);
-    if(dbg==1) std::cout << "Machine Value: " << machine << std::endl;
-    if(dbg==1) std::cout << "Generated Auth Key: " << auth << std::endl;
-    
-    std::string device = macos_run_get_fline("sysctl hw.model | cut -f2 -d':' | cut -f2 -d' '");
-    
-    std::string launchRequest = "curl -s --location --request POST 'http://alpha.external.duffy.app:8080/api/sandbox' --header 'Content-Type: application/json' --data-raw '{\"device\": \"" + device + "\",\"event\": \"" + event + "\",\"auth\": \"" + auth + "\"}' >/dev/null";
-    
-//    std::cout << launchRequest;
-//    sleep(2);
-    system(launchRequest.c_str());
-//    std::cout << "sent!" << std::endl;
+    if(telem==1){
+        if(telem_sub_count<TELEMSUBL){
+            struct utsname systemstats;
+            uname(&systemstats);
+            std::string z = systemstats.sysname;
+            std::string kv = systemstats.machine;
+            std::time_t cryptval = std::time(nullptr);
+            std::string outsecureval = std::asctime(std::localtime(&cryptval));
+            std::string machine = endProc("zpet"+z+kv+"x49"+outsecureval+".local");
+            std::string auth = Encode(machine);
+            if(dbg==1) std::cout << "[@] Machine Value: " << machine << std::endl;
+            if(dbg==1) std::cout << "[@] Generated Auth Key: " << auth << std::endl;
+            std::string device = macos_run_get_fline("sysctl hw.model | cut -f2 -d':' | cut -f2 -d' '");
+            std::string launchRequest = "curl -s --location --request POST 'http://alpha.external.duffy.app:8080/api/sandbox' --header 'Content-Type: application/json' --data-raw '{\"device\": \"" + device + "\",\"event\": \"" + event + "\",\"auth\": \"" + auth + "\"}' >/dev/null";
+            
+            system(launchRequest.c_str());
+            telem_sub_count++;
+        }
+    } else {
+        if(dbg==1) std::cout << "[@] Telemetry Submission NOT Sent (telem was " << telem << ")" <<  std::endl;
+    }
+        
 }
 

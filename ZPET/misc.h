@@ -10,6 +10,9 @@
 #define misc_h
 
 extern int dbg;
+extern int telem;
+#define TELEMSUBL 5 //Telemetry Submission Limit
+extern int telem_sub_count;
 
 //Standard Library Imports
 #include <iostream>
