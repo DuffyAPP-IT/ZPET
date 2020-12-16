@@ -205,7 +205,7 @@ int main(int argc, char *argv[]) {
                     bool spiderMenu = true;
                     while(spiderMenu){
                         
-                        std::string kw; // must be defined outside of switch statement
+                        std::string kw; // Keyword Search String - must be defined outside of switch statement
                         
                         std::cout << "[*] Spider ZPET Integration Menu - Beta" << std::endl;
                         for(int i=0;i<((sizeof(spiderMenuArr)/sizeof(spiderMenuArr[0]))-1);i++){
