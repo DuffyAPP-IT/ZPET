@@ -471,9 +471,6 @@ int main(int argc, char *argv[]) {
                     iosSend("resources/ios/libplist.3.dylib", "/usr/lib/libplist.3.dylib", device);
                     iosSend("resources/ios/plistutil", "/usr/bin/plistutil", device);
 
-                    bool spiderMenu = true;
-                    std::string kw; // Keyword Search String - must be defined outside of switch statement
-                    
                     std::cout << "[*] Application Data Container Extraction" << std::endl;
                     
                     
@@ -486,7 +483,7 @@ int main(int argc, char *argv[]) {
                     std::cin >> appnum;
 
                     //print apps etc here
-                    LiveCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " '/spider-integration-live.sh -app-fetch " + std::to_string(appnum) + "'";
+                    LiveCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " '/spider-integration-live.sh -app-fetch-id " + std::to_string(appnum) + "'";
                     system(LiveCMD.c_str());
                     
                     iosReceive("/ZPET/app_temp", device.ip_addr, device.ssh_pw, device.port);
