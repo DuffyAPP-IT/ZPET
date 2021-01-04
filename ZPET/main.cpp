@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
     
     submit_event("userStart");
     
-    std::string Menu[8]={"[LIVE]\tCheckra1n CLI\t\t\t(Boot From DFU)","[LIVE]\tExecute SPIDER Live\t\t\t(User-Data Analysis)","[LIVE]\tExecute ZPETv2 Modules\t\t(Documentation!)","[LIVE]\tAcquire Device Root Filesystem\t(Encryption State Prompt Prior To Acquisition)","[ROOT-FS]\tExecute SPIDER Locally\t\t(User-Data Analysis)","[ROOT-FS]\tExecute Mapper Locally\t\t(Blind Analysis)","[MISC]\tExit ZPET"};
+    std::string Menu[8]={"[LIVE]\tCheckra1n CLI\t\t\t(Boot From DFU)","[LIVE]\tExecute SPIDER Live\t\t\t(User-Data Analysis)","[LIVE]\tExecute ZPETv2 Modules\t\t(Documentation!)","[LIVE]\tAcquire Device Root Filesystem\t(Encryption State Prompt Prior To Acquisition)","[ROOT-FS]\tExecute SPIDER Locally\t\t(User-Data Analysis)","[ROOT-FS]\tExecute Mapper Locally\t\t(Blind Analysis)","[LIVE]\tExtract Application Data Container\t\t(Manual Analysis)","[MISC]\tExit ZPET"};
     
     
     std::cout << "[*] Main Menu" << std::endl;
@@ -442,10 +442,125 @@ int main(int argc, char *argv[]) {
             }
             break;
                 
-        case 7:
-                exitZPET = true;
+            case 7:{
+            submit_event("userFeatureHit:AppDataExtract");
+            std::cout << "Application Data Extraction" << std::endl;
+            //Basic Device Init
+            std::cout << "\n[*] Initialising Device\n" << std::endl;
+            //Initialise 'device' object...
+            Device device = init_device("ssh");
+            //Dump information for debugging purposes
+            if(device.can_connnect){
+                device.info();
+                std::cout << "\n[*] Preparing Spider..." << std::endl;
+                sleep(5);
+                if(is_file_exist("resources/ios/spider-integration-live.sh")){
+                    //mount device as rw
+                    std::string remountDisk = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " 'mount -o rw,union,update / '";
+                    system(remountDisk.c_str());
+                    
+                    //send live prereqs...
+                    iosSend("resources/ios/spider-integration-live.sh", "/spider-integration-live.sh", device);
+                    iosSend("resources/ios/sqlite3", "/usr/bin/sqlite3", device);
+                    iosSend("resources/ios/sqlite3.h", "/usr/include/sqlite3.h", device);
+                    iosSend("resources/ios/sqlite3ext.h", "/usr/include/sqlite3ext.h", device);
+                    iosSend("resources/ios/libreadline.7.dylib", "/usr/lib/libreadline.7.dylib", device);
+                    iosSend("resources/ios/libncurses.6.dylib", "/usr/lib/libncurses.6.dylib", device);
+                    iosSend("resources/ios/tr", "/usr/bin/tr", device);
+                    iosSend("resources/ios/paste", "/usr/bin/paste", device);
+                    iosSend("resources/ios/libplist.3.dylib", "/usr/lib/libplist.3.dylib", device);
+                    iosSend("resources/ios/plistutil", "/usr/bin/plistutil", device);
+
+                    bool spiderMenu = true;
+                    std::string kw; // Keyword Search String - must be defined outside of switch statement
+                    
+                    std::cout << "[*] Application Data Container Extraction" << std::endl;
+                    
+                    
+                    //print apps etc here
+                    std::string LiveCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " '/spider-integration-live.sh -app'";
+                    system(LiveCMD.c_str());
+                    
+                    int appnum = 0;
+                    std::cout << "[?] Please Enter Numerical ID Of Target" << std::endl;
+                    std::cin >> appnum;
+
+                    //print apps etc here
+                    LiveCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " '/spider-integration-live.sh -app-fetch " + std::to_string(appnum) + "'";
+                    system(LiveCMD.c_str());
+                    
+                    iosReceive("/ZPET/app_temp", device.ip_addr, device.ssh_pw, device.port);
+                    std::cout << "[+] Done!" << std::endl;
+//                    while(spiderMenu){
+//
+//
+//                    }
+                    exit(1);
+                }
                 break;
-            
+//
+//                        int userOpt=0;
+//                        std::cout << "\n[?] ";
+//                        std::cin >> userOpt; //replace me with something more secure!
+//
+//                        switch (userOpt) {
+//                            case 1:{
+//                                std::cout << "[*] Database Schema Extraction" << std::endl;
+//                                std::string dbSchemeSpiderLiveCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " '/spider-integration-live.sh -f'";
+//                                system(dbSchemeSpiderLiveCMD.c_str());
+//                                if(iosReceive("/SpiderOUT", device.ip_addr.c_str(), device.ssh_pw.c_str(), device.port.c_str())==0){
+//                                    std::cout << "[*] Extraction Complete\n[@] Check SENSITIVE/ & set necessary open cmd depending on structure" << std::endl;
+//                                } else {
+//                                    std::cout << "[!] Spider Analysis Did Not Complete" << std::endl;
+//                                }
+//                                break;
+//                            }
+//                            case 2:{
+//                                std::cout << "[*] ZPET->Spider KWSearch..." << std::endl;
+//                                bool KWSearch = true;
+//                                while(KWSearch){
+//                                    std::cout << "[*] Please Enter A Single Keyword...\n[?] ";
+//                                    std::cin >> kw;
+//                                    char cmdbuf[400]; //temporary static buffer
+//                                    snprintf(cmdbuf, 400, "resources/sshpass -p %s ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@%s -p%s '/spider-integration-live.sh -i  %s'",device.ssh_pw.c_str(),device.ip_addr.c_str(),device.port.c_str(),kw.c_str());
+////                                    std::cout << cmdbuf << std::endl;
+//                                    system(cmdbuf);
+//                                    std::cout << "[*] Execution Complete" << std::endl;
+//                                }
+//                            }
+//                                break;
+//                            case 4:
+//                                spiderMenu = false;
+//                            default:
+//                                std::cout << "[!] Invalid Option" << std::endl;
+//                                spiderMenu = false;
+//                        }
+//                    }
+//                } else{
+//                    std::cout << "[!] Internal Error" << std::endl;
+//                }
+//
+//                //Clean Prerequesites
+//                iosRM("/spider-integration-live.sh", device);
+//                iosRM("/usr/bin/sqlite3", device);
+//                iosRM("/usr/include/sqlite3.h", device);
+//                iosRM("/usr/include/sqlite3ext.h", device);
+//                iosRM("/usr/lib/libncurses.6.dylib", device);
+//                iosRM("/usr/bin/tr", device);
+//                iosRM("/usr/bin/paste", device);
+//
+//                if(device.connection_type == "ssh" && device.port != "3022") system("pkill iproxy");
+//            } else{
+//                submit_event("userProcess:deviceCanConnectERR");
+//                std::cout << "\n[!] Device Did Not Connect Successfully...";
+//                sleep(5);
+//                return 1;
+//            }
+//                break;
+//                exitZPET = true;
+//                break;
+            }
+        }
             
         default:
             submit_event("userProcess:invalidMenuClick");
