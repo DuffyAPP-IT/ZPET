@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
     
     submit_event("userStart");
     
-    std::string Menu[8]={"[LIVE]\tCheckra1n CLI\t\t\t(Boot From DFU)","[LIVE]\tExecute SPIDER Live\t\t\t(User-Data Analysis)","[LIVE]\tExecute ZPETv2 Modules\t\t(Documentation!)","[LIVE]\tAcquire Device Root Filesystem\t(Encryption State Prompt Prior To Acquisition)","[ROOT-FS]\tExecute SPIDER Locally\t\t(User-Data Analysis)","[ROOT-FS]\tExecute Mapper Locally\t\t(Blind Analysis)","[LIVE]\tExtract Application Data Container\t\t(Manual Analysis)","[MISC]\tExit ZPET"};
+    std::string Menu[8]={"[LIVE]\tCheckra1n CLI\t\t\t(Boot From DFU)","[LIVE]\tExecute SPIDER Live\t\t\t(User-Data Analysis)","[LIVE]\tExecute ZPETv2 Modules\t\t(Documentation!)","[LIVE]\tAcquire Device Root Filesystem\t(Encryption State Prompt Prior To Acquisition)","[LIVE]\tExtract Application Data Container\t\t(Manual Analysis)","[ROOT-FS]\tExecute SPIDER Locally\t\t(User-Data Analysis)","[ROOT-FS]\tExecute Mapper Locally\t\t(Blind Analysis)","[MISC]\tExit ZPET"};
     
     
     std::cout << "[*] Main Menu" << std::endl;
@@ -361,6 +361,113 @@ int main(int argc, char *argv[]) {
                     }
                 }
             break;
+                
+                
+                
+            case 5:{
+            submit_event("userFeatureHit:AppDataExtract");
+            std::cout << "Application Data Extraction" << std::endl;
+            //Basic Device Init
+            std::cout << "\n[*] Initialising Device\n" << std::endl;
+            //Initialise 'device' object...
+            Device device = init_device("ssh");
+            //Dump information for debugging purposes
+            if(device.can_connnect){
+                device.info();
+                std::cout << "\n[*] Preparing Spider..." << std::endl;
+                sleep(5);
+                if(is_file_exist("resources/ios/spider-integration-live.sh")){
+                    //mount device as rw
+                    std::string remountDisk = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " 'mount -o rw,union,update / '";
+                    system(remountDisk.c_str());
+                    
+                    //send live prereqs...
+                    iosSend("resources/ios/spider-integration-live.sh", "/spider-integration-live.sh", device);
+                    iosSend("resources/ios/sqlite3", "/usr/bin/sqlite3", device);
+                    iosSend("resources/ios/sqlite3.h", "/usr/include/sqlite3.h", device);
+                    iosSend("resources/ios/sqlite3ext.h", "/usr/include/sqlite3ext.h", device);
+                    iosSend("resources/ios/libreadline.7.dylib", "/usr/lib/libreadline.7.dylib", device);
+                    iosSend("resources/ios/libncurses.6.dylib", "/usr/lib/libncurses.6.dylib", device);
+                    iosSend("resources/ios/tr", "/usr/bin/tr", device);
+                    iosSend("resources/ios/paste", "/usr/bin/paste", device);
+                    iosSend("resources/ios/libplist.3.dylib", "/usr/lib/libplist.3.dylib", device);
+                    iosSend("resources/ios/plistutil", "/usr/bin/plistutil", device);
+
+                    std::cout << "[*] Application Data Container Extraction" << std::endl;
+                    
+                    
+                    std::string spiderMenuArr[4]={"List Installed Applications","Extract Via Bundle Identifier"};
+                    bool spiderMenu = true;
+                    while(spiderMenu){
+                        
+                        std::string kw; // must be defined outside of switch statement
+                        
+                        std::cout << "[*] Spider ZPET Integration Menu - Beta" << std::endl;
+                        for(int i=0;i<((sizeof(spiderMenuArr)/sizeof(spiderMenuArr[0]))-1);i++){
+                            std::cout << "[" << (i+1) << "] " << spiderMenuArr[i] << std::endl;
+                        }
+
+                        int userOpt=0;
+                        std::cout << "\n[?] ";
+                        std::cin >> userOpt; //replace me with something more secure!
+                        
+                        switch (userOpt) {
+                            case 1:{
+                                std::cout << "[*] List Installed Applications" << std::endl;
+                                //print apps etc here
+                                std::string LiveCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " '/spider-integration-live.sh -app'";
+                                system(LiveCMD.c_str());
+                                
+                                int appnum = 0;
+                                std::cout << "[?] Please Enter Numerical ID Of Target" << std::endl;
+                                std::cin >> appnum;
+
+                                //print apps etc here
+                                LiveCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " '/spider-integration-live.sh -app-fetch-id " + std::to_string(appnum) + "'";
+                                system(LiveCMD.c_str());
+                                
+                                iosReceive("/ZPET/app_temp", device.ip_addr, device.ssh_pw, device.port);
+                                std::cout << "[+] Application Data Extracted" << std::endl;
+                                system("open ./SENSITIVE");
+                                break;
+                            }
+                            case 2:{
+                                std::cout << "[*] ZPET->App Fetch" << std::endl;
+                                bool KWSearch = true;
+                                while(KWSearch){
+                                    std::cout << "[*] Please Enter Bundle ID...\n[?] ";
+                                    std::cin >> kw;
+                                    
+                                    std::cout << "[+] Extracting..." << std::endl;
+                                    //print apps etc here
+                                    std::string LiveCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " '/spider-integration-live.sh -app-fetch-bundle " + kw + "'";
+                                    system(LiveCMD.c_str());
+                                    
+                                    iosReceive("/ZPET/app_temp", device.ip_addr, device.ssh_pw, device.port);
+                                    std::cout << "[+] Application Data Extracted" << std::endl;
+                                    system("open ./SENSITIVE");
+                                }
+                                break;
+                            }
+                                
+                            default:
+                                std::cout << "[!] Invalid Option!";
+                            }
+            
+    //                    while(spiderMenu){
+    //
+    //
+    //                    }
+                    exit(1);
+                }
+                break;
+            }
+        }
+    }
+                
+                
+                
+                
         /*
          Spider - Local Integration
          Last Author: James Duffy
@@ -369,7 +476,7 @@ int main(int argc, char *argv[]) {
          Notes:
                 * Verify rootFS exists locally instead of in sh!
          */
-        case 5:
+        case 6:
             submit_event("userFeatureHit:SpiderLOCAL");
                 if(is_file_exist("./SENSITIVE/private/etc/hosts") && is_file_exist("./resources/spider-integration-local.sh")){ //verify iOS filesystem is captured & accessible
                     //Small Menu For Spider Analysis Options
@@ -433,7 +540,7 @@ int main(int argc, char *argv[]) {
                     std::cout << "SPIDER Local ZPET Integration Requires A Full Filesystem Acquisition...Option [4] In ZPETv2!\nChoose [LIVE] Spider For Live Device SPIDER Analysis" << std::endl;
                 }
                 break;
-        case 6:
+        case 7:
             submit_event("userFeatureHit:MapperLocal");
             if(is_file_exist("./SENSITIVE/etc/hosts") && is_file_exist("./resources/mapper.sh")){
                 system("resources/mapper.sh");
@@ -441,107 +548,7 @@ int main(int argc, char *argv[]) {
                 std::cout << "Mapper For ZPET Requires A Full Filesystem Acquisition...Option [4] In ZPET!" << std::endl;
             }
             break;
-                
-            case 7:{
-            submit_event("userFeatureHit:AppDataExtract");
-            std::cout << "Application Data Extraction" << std::endl;
-            //Basic Device Init
-            std::cout << "\n[*] Initialising Device\n" << std::endl;
-            //Initialise 'device' object...
-            Device device = init_device("ssh");
-            //Dump information for debugging purposes
-            if(device.can_connnect){
-                device.info();
-                std::cout << "\n[*] Preparing Spider..." << std::endl;
-                sleep(5);
-                if(is_file_exist("resources/ios/spider-integration-live.sh")){
-                    //mount device as rw
-                    std::string remountDisk = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " 'mount -o rw,union,update / '";
-                    system(remountDisk.c_str());
-                    
-                    //send live prereqs...
-                    iosSend("resources/ios/spider-integration-live.sh", "/spider-integration-live.sh", device);
-                    iosSend("resources/ios/sqlite3", "/usr/bin/sqlite3", device);
-                    iosSend("resources/ios/sqlite3.h", "/usr/include/sqlite3.h", device);
-                    iosSend("resources/ios/sqlite3ext.h", "/usr/include/sqlite3ext.h", device);
-                    iosSend("resources/ios/libreadline.7.dylib", "/usr/lib/libreadline.7.dylib", device);
-                    iosSend("resources/ios/libncurses.6.dylib", "/usr/lib/libncurses.6.dylib", device);
-                    iosSend("resources/ios/tr", "/usr/bin/tr", device);
-                    iosSend("resources/ios/paste", "/usr/bin/paste", device);
-                    iosSend("resources/ios/libplist.3.dylib", "/usr/lib/libplist.3.dylib", device);
-                    iosSend("resources/ios/plistutil", "/usr/bin/plistutil", device);
-
-                    std::cout << "[*] Application Data Container Extraction" << std::endl;
-                    
-                    
-                    std::string spiderMenuArr[4]={"List Installed Applications","Extract Via Bundle Identifier","Exit ZPET Application Fetch"};
-                    bool spiderMenu = true;
-                    while(spiderMenu){
-                        
-                        std::string kw; // must be defined outside of switch statement
-                        
-                        std::cout << "[*] Spider ZPET Integration Menu - Beta" << std::endl;
-                        for(int i=0;i<((sizeof(spiderMenuArr)/sizeof(spiderMenuArr[0]))-1);i++){
-                            std::cout << "[" << (i+1) << "] " << spiderMenuArr[i] << std::endl;
-                        }
-
-                        int userOpt=0;
-                        std::cout << "\n[?] ";
-                        std::cin >> userOpt; //replace me with something more secure!
-                        
-                        switch (userOpt) {
-                            case 1:{
-                                std::cout << "[*] List Installed Applications" << std::endl;
-                                //print apps etc here
-                                std::string LiveCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " '/spider-integration-live.sh -app'";
-                                system(LiveCMD.c_str());
-                                
-                                int appnum = 0;
-                                std::cout << "[?] Please Enter Numerical ID Of Target" << std::endl;
-                                std::cin >> appnum;
-
-                                //print apps etc here
-                                LiveCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " '/spider-integration-live.sh -app-fetch-id " + std::to_string(appnum) + "'";
-                                system(LiveCMD.c_str());
-                                
-                                iosReceive("/ZPET/app_temp", device.ip_addr, device.ssh_pw, device.port);
-                                std::cout << "[+] Application Data Extracted" << std::endl;
-                                system("open ./SENSITIVE");
-                                break;
-                            }
-                            case 2:{
-                                std::cout << "[*] ZPET->App Fetch" << std::endl;
-                                bool KWSearch = true;
-                                while(KWSearch){
-                                    std::cout << "[*] Please Enter Bundle ID...\n[?] ";
-                                    std::cin >> kw;
-                                    
-                                    std::cout << "[+] Extracting..." << std::endl;
-                                    //print apps etc here
-                                    std::string LiveCMD = "resources/sshpass -p " + device.ssh_pw + " ssh -o \"UserKnownHostsFile=/dev/null\" -o \"StrictHostKeyChecking=no\" root@" + device.ip_addr + " -p" + device.port + " '/spider-integration-live.sh -app-fetch-bundle " + kw + "'";
-                                    system(LiveCMD.c_str());
-                                    
-                                    iosReceive("/ZPET/app_temp", device.ip_addr, device.ssh_pw, device.port);
-                                    std::cout << "[+] Application Data Extracted" << std::endl;
-                                    system("open ./SENSITIVE");
-                                }
-                                break;
-                            }
-                                
-                            default:
-                                std::cout << "[!] Invalid Option!";
-                            }
-            
-//                    while(spiderMenu){
-//
-//
-//                    }
-                    exit(1);
-                }
-                break;
-            }
-        }
-    }
+    
         default:
             submit_event("userProcess:invalidMenuClick");
             std::cout << "[!] Invalid Option!" << std::endl;
