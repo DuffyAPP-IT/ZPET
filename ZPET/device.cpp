@@ -47,16 +47,42 @@ Device init_device(std::string connection_type){
         
         /*
          Initialising USB SSH Proxy
-         Last Modified: 05-12-2020
+         Last Modified: 07-03-2021
          Author: James Duffy
          Notes:
                 * Checks if ip_addr is 127.0.0.1 - If it's anything else, we're not connecting via USB
+                * Allows for selection of custom device UDID (from connected devices) - 07-03-2021
                 * Redirect device port to localhost '7788' for ZPET to use as a communication channel
                 * Exit code of iProxy checked, will assume error if return code was anything other than 0.
                 * Finally re-assign 'port' variable to 7788, as the device port is now irrelevant due to the new mapping.
          */
         if(connected.ip_addr=="127.0.0.1"){
-            std::string usbproxyconfig = "sudo iproxy 7788 " + connected.port + "  2>/dev/null >/dev/null &";
+            //Allow for custom device selection from multiple UDIDs
+            std::cout << "Printing Connected Device UDIDs..." << std::endl;
+            std::cout << system("idevice_id") << std::endl;
+            int device_count = atoi(macos_run_get_fline("idevice_id | wc -l"));
+            std::cout << device_count+1 << " Devices Connected" << std::endl;
+            std::cout << "Which Device Should Be Initialised?" << std::endl;
+            
+            for(int i=1; i<=(device_count+1); i++){
+                std::string query = "idevice_id | head -" + std::to_string(i) + " | tail -1";
+//                std::cout << "Executing " + query << std::endl;
+                char *exec = new char[query.length() + 1];
+                strcpy(exec, query.c_str());
+                std::cout << i << " - " << macos_run_get_fline(exec) << std::endl;
+            }
+            std::cout << "> ";
+            int device = 1;
+            std::cin >> device;
+            
+            std::string query = "idevice_id | head -" + std::to_string(device) + " | tail -1 | cut -f1 -d' '";
+            char *exec_find_udid = new char[query.length() + 1];
+            strcpy(exec_find_udid, query.c_str());
+            char *udid = macos_run_get_fline(exec_find_udid);
+            
+            std::cout << "UDID -> " << udid << std::endl;
+            
+            std::string usbproxyconfig = "sudo iproxy -u " + std::string(udid) + " 7788 " + connected.port + "  2>/dev/null >/dev/null &";
 //            system(usbproxyconfig.c_str());
             const char *exec = usbproxyconfig.c_str();
             int ret = system(exec);
