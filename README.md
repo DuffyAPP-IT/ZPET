@@ -30,6 +30,14 @@ ZPET can operate in a completely offline environment. There are some optional an
 
 When selecting an operation mode within ZPET, you'll have to complete a short 'device initialisation process' - This allows ZPET to interface with the connected device.
 
+## UDID / Device Selection
+
+For the purposes of correctly maintaining a communication channel with a device, we must select the UDID of the target device. Without this process, the UDID chosen would be unpredictable.
+
+Where multiple iDevices are selected, it is now (as of B18700) possible to list and select the UDID for the target iDevice.
+
+A list of available devices will automatically appear, allowing you to choose which device to initialise. If no other devices are connected, the UDID Selection Process will not occur.
+
 ## Checkra1n/SSH
 
 When initialising a connection to a device vulnerable to checkm8, it's suitable for us to to boot the device using checkra1n in order for the 'Secure SHell Daemon' to begin executing on the device.
