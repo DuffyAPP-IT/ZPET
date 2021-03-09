@@ -58,6 +58,7 @@ Device init_device(std::string connection_type){
          */
         if(connected.ip_addr=="127.0.0.1"){
             //Allow for custom device selection from multiple UDIDs
+            system("pkill iproxy"); //new iproxy instance w/custom udid will not start if another process is executing
             std::cout << "Printing Connected Device UDIDs..." << std::endl;
             std::cout << system("idevice_id") << std::endl;
             int device_count = atoi(macos_run_get_fline("idevice_id | wc -l"));
@@ -80,10 +81,10 @@ Device init_device(std::string connection_type){
             strcpy(exec_find_udid, query.c_str());
             char *udid = macos_run_get_fline(exec_find_udid);
             
-            std::cout << "UDID -> " << udid << std::endl;
+            std::cout << "Selected UDID -> " << udid << std::endl;
             
             std::string usbproxyconfig = "sudo iproxy -u " + std::string(udid) + " 7788 " + connected.port + "  2>/dev/null >/dev/null &";
-//            system(usbproxyconfig.c_str());
+            
             const char *exec = usbproxyconfig.c_str();
             int ret = system(exec);
             if (WEXITSTATUS(ret) != 0){
