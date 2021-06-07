@@ -101,9 +101,10 @@ fi
 
 if [[ $1 = "-app" ]]
 then
-	# echo "[+] Extracting Application IDs"
+	echo "[+] Extracting Application IDs"
 	rm -rf /ZPET/app_export 2>/dev/null
 	rm /ZPET/app_id_list 2>/dev/null
+	mdkir /ZPET
 	find /private/var/mobile/Containers/Data/Application/ -maxdepth 2 -name ".com.apple.mobile_container_manager.metadata.plist" | grep -o -e "[a-zA-Z0-9]\\{8\\}-[a-zA-Z0-9]\\{4\\}-[a-zA-Z0-9]\\{4\\}-[a-zA-Z0-9]\\{4\\}-[a-zA-Z0-9]\\{12\\}" > /ZPET/app_id_list
 	# Process Sender ID Column																				-e "\S\\{8\\}-\S\\{4\\}-\S\\{4\\}-\S\\{4\\}-\S\\{12\\}" > /ZPET/app_id_list
 	if [ -f /ZPET/app_id_list ]
