@@ -30,10 +30,10 @@ find $geofilter -size +5k -exec tesseract {} stdout --dpi 72 2>/dev/null \;
 sleep 5
 
 
-echo -e "----------\nFetching Friends List...\n---------"
-sqlite3 $docobj -line "select legacyConversationId from index_arroyomigration__oneononemetadata_draftlegacyConversationId" | cut -f2 -d'='
-echo "---------"
-sleep 5
+#echo -e "----------\nFetching Friends List...\n---------"
+#sqlite3 $docobj -line "select legacyConversationId from index_arroyomigration__oneononemetadata_draftlegacyConversationId" | cut -f2 -d'='
+#echo "---------"
+#sleep 5
 
 echo -e "----------\nFetching Account Information...\n---------"
 rm adatain
@@ -68,9 +68,6 @@ echo -n "."
 sleep 1
 echo -n "."
 sleep 1
-echo -n "."
-sleep 1
-echo -n "."
 
 
 sqlline="select hex(message_content) from conversation_message"
@@ -162,15 +159,21 @@ echo -n "Message Read Date/Time -> "
 cat $count.rtime
 
 echo -n "Message Data -> "
-if protoc --decode_raw < $count.outsc | grep "351m" >/dev/null; then
+# if protoc --decode_raw < $count.outsc | grep "351m" >/dev/null; then
+# protoc --decode_raw < $count.outsc | grep 11 -A2 | grep ' 1:'
+# fi
+# if protoc --decode_raw < $count.outsc | grep "307f" >/dev/null; then
+# protoc --decode_raw < $count.outsc | grep '4 {' -A2 | grep '1:'
+# fi
+# if protoc --decode_raw < $count.outsc | grep "010cl" >/dev/null; then
+# protoc --decode_raw < $count.outsc | grep '4 {' -A2 | grep '1:'
+# fi
+echo "PARSE ATTEMPT 1 BEGIN"
 protoc --decode_raw < $count.outsc | grep 11 -A2 | grep ' 1:'
-fi
-if protoc --decode_raw < $count.outsc | grep "307f" >/dev/null; then
+echo "PARSE ATTEMPT 1 END"
+echo "PARSE ATTEMPT 2 BEGIN"
 protoc --decode_raw < $count.outsc | grep '4 {' -A2 | grep '1:'
-fi
-if protoc --decode_raw < $count.outsc | grep "010cl" >/dev/null; then
-protoc --decode_raw < $count.outsc | grep '4 {' -A2 | grep '1:'
-fi
+echo "PARSE ATTEMPT 2 END"
 
 
 
